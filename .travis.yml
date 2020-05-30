@@ -4,8 +4,6 @@ jdk:
 dist: trusty
 deploy:
   provider: heroku
-  api-key:
-    secure: "$HEROKU_API_KEY"
   app: covid-19-tracking-system
   api_key:
     secure: bsIBTL63vJIOzKrfeyLWRoFn5H+YbZZ3TsXYhhytJKFIgiYmH8tkh+EQsw8Cme9iZw/LvBjbZcGjVhnto2DKGZ0EUc1e6b8rXEcLv/pyh/9ilJIcTVT2WEPj11DZxP/0PRDlrzvRpOLvy9qjBCLj8+cY6lBlPgJKjTkE/sodQ1P5+d9ODbiMsIfe7TXBgoe54arUMYnRJl7tr3zdM3nXbADU27YvpIvaC9FVv2lv0A5smvJHEMzfVQZPdStW6zRUKDpbpN8c9HamX4uDlhlj9M3l5reTEPPalcoBpgKa/jQ/pcC0Qy68c2R9jQvEztWZ7SlC0xqrRGbLrSaYAlJXbI+m3p60Bad7XOxRr4eXhi/LKXng0eS8SyK9KCDgaPdU0Vbk3LTK7h3DkjNwPtmKg2VTYlLR8/KSf0sffmVZNvivYFjGSgtTsQ2lk/1zz9cmNDMXYaQpz9l93uWsszMfSEmZlIjCiNFh4Y3GBmkpCzBW2nWf15iVWFl3xiSaL/1aj0weYzD0suPSDgRZdpXxxmR9Qdv4eYwz7CQqrJDSc3/S+avT4kGcpAZ6kD568eAoqbWmZFPPshKdUKqjDmZOSzZzbn4fyXmA7Er/9wRPfcsQU4crwfEmjFy3k+VBd+RpmTcJpfw8iBTnqinlreLMQScG4WTSE58MUb7N//hfi/c=
