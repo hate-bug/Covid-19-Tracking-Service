@@ -23,7 +23,11 @@ public class Place {
     private String name;
 
     @Autowired
-    public Place(){}
+    public Place(){
+        this.name = "unknown";
+        this.latitude = 0;
+        this.latitude = 0;
+    }
 
     public Place (String name, double longitude, double latitude){
         this.name = name;
@@ -33,6 +37,18 @@ public class Place {
 
     public String getName (){
         return this.name;
+    }
+
+    public void setName (String name) {
+        this.name = name;
+    }
+
+    public void setLongitude (double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude (double latitude) {
+        this.latitude = latitude;
     }
 
     public Long getId (){

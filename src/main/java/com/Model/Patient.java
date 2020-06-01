@@ -6,10 +6,8 @@
 package com.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class Patient {
@@ -18,12 +16,12 @@ public class Patient {
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long Id;
     @ManyToMany
-    private List<Event> attendedEvents;
+    private Set<Event> attendedEvents;
 
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-        this.attendedEvents = new ArrayList<Event>();
+        this.attendedEvents = new HashSet<Event>();
     }
 
     public long getId(){
@@ -32,19 +30,11 @@ public class Patient {
 
     //Event list should not exist any redundant event, check ID before adding the event
     public void addAttendEvents(Event event){
-        for (Event e: this.attendedEvents){
-            if (e.getId() == event.getId()){
-                return;
-            }
-        }
         this.attendedEvents.add(event);
     }
 
-    public List<Event> getAllEvents(){
+    public Set<Event> getAllEvents(){
         return this.attendedEvents;
     }
 
-    public void setId (long Id){
-        this.Id = Id;
-    }
 }

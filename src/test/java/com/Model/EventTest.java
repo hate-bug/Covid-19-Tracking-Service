@@ -12,33 +12,30 @@ class EventTest {
     Place td;
     Event footballGame, shopEvent;
     Patient p1, p2;
-    Date date;
     Calendar calendar;
 
     @BeforeEach
     void setUp() {
         calendar = Calendar.getInstance();
         calendar.set(2020, 0, 29);
-        date = new Date(calendar.getTimeInMillis());
         td = new Place("TD place", 11.12, 12.22);
-        footballGame = new Event("Game Watch", td, date);
-        shopEvent = new Event("Shopping", td, date);
+        footballGame = new Event("Game Watch", td, calendar.getTimeInMillis());
+        shopEvent = new Event("Shopping", td, calendar.getTimeInMillis());
         p1 = new Patient();
         p2 = new Patient();
-        p2.setId(1);
     }
 
    @Test
     void getAttendedPatientNum() {
-       assertEquals(0, footballGame.getAttendedPatientNum());
+       assertEquals(0, footballGame.getAttendedPatients().size());
        footballGame.addPatient(p1);
-       assertEquals(1, footballGame.getAttendedPatientNum());
+       assertEquals(1, footballGame.getAttendedPatients().size());
        //add a redundant patient
        footballGame.addPatient(p1);
-       assertEquals(1, footballGame.getAttendedPatientNum());
+       assertEquals(1, footballGame.getAttendedPatients().size());
        //add a different patient
        footballGame.addPatient(p2);
-       assertEquals(2, footballGame.getAttendedPatientNum());
+       assertEquals(2, footballGame.getAttendedPatients().size());
     }
 
 }

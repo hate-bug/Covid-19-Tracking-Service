@@ -10,6 +10,5 @@ import java.util.List;
 @Component
 public interface EventRepository extends CrudRepository<Event, Integer> {
 
-    List<Event> findAll ();
 
 }
