@@ -35,7 +35,7 @@ public class Event {
         this.place = new Place();
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, 01, 01);
-        this.date = new Date (calendar.getTimeInMillis()); //By default set date to 1st/Jan/2000
+        this.date = calendar.getTime(); //By default set date to 1st/Jan/2000
     }
 
     public Event(String name, Place place, Date date) {
