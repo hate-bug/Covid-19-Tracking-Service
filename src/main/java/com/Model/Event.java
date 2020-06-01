@@ -8,6 +8,8 @@ package com.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +19,7 @@ public class Event {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long Id;
-    private long date;
+    private Date date;
     private String name;
 
     @OneToOne
@@ -31,10 +33,12 @@ public class Event {
         this.attendedPatients = new HashSet<>();
         this.name = "unknown";
         this.place = new Place();
-        this.date = 15778380; //By default set date to 1st/Jan/2000
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, 01, 01);
+        this.date = new Date (calendar.getTimeInMillis()); //By default set date to 1st/Jan/2000
     }
 
-    public Event(String name, Place place, long date) {
+    public Event(String name, Place place, Date date) {
         this.name = name;
         this.place = place;
         this.date = date;
@@ -61,11 +65,11 @@ public class Event {
         this.name = name;
     }
 
-    public void setDate (long date){
+    public void setDate (Date date){
         this.date = date;
     }
 
-    public long getDate () {
+    public Date getDate () {
         return this.date;
     }
 

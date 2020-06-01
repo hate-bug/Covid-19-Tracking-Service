@@ -13,6 +13,7 @@ class PatientTest {
     Patient p;
     Event game, party;
     Calendar calendar;
+    Date date;
     Place p1, p2;
     @BeforeEach
     void setUp() {
@@ -20,8 +21,9 @@ class PatientTest {
         p2 = new Place("Fisher Ave", 120.09, 111.00);
         calendar = Calendar.getInstance();
         calendar.set(2020, 01, 29, 17, 33);
-        game = new Event("game", p1, calendar.getTimeInMillis());
-        party = new Event("Party", p2, calendar.getTimeInMillis());
+        date = new Date(calendar.getTimeInMillis());
+        game = new Event("game", p1, date);
+        party = new Event("Party", p2, date);
         p = new Patient();
 
     }
