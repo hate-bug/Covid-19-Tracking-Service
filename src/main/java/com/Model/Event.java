@@ -22,10 +22,10 @@ public class Event {
     private Date date;
     private String name;
 
-    @OneToOne
+    @OneToOne (cascade = CascadeType.ALL)
     private Place place;
 
-    @ManyToMany
+    @ManyToMany (cascade = CascadeType.ALL)
     private Set<Patient> attendedPatients;
 
     @Autowired
@@ -38,6 +38,7 @@ public class Event {
         this.date = calendar.getTime(); //By default set date to 1st/Jan/2000
     }
 
+    @Autowired
     public Event(String name, Place place, Date date) {
         this.name = name;
         this.place = place;
@@ -79,5 +80,20 @@ public class Event {
 
     public Set<Patient> getAttendedPatients() {
         return attendedPatients;
+    }
+
+    /**
+     * Return true if two events have the same date, Place and name.
+     */
+    @Override
+    public boolean equals (Object o){
+        if (o instanceof Event){
+            if ((((Event)o).getName().equals(this.name))){
+                if (((((Event)o).getDate()).compareTo(this.date)==0)&&(((Event)o).getPlace().equals(this.place))){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

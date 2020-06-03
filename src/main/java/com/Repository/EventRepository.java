@@ -1,11 +1,9 @@
-package com.CRUD;
+package com.Repository;
 
 import com.Model.Event;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 @Component
 public interface EventRepository extends CrudRepository<Event, Integer> {
