@@ -3,6 +3,7 @@ $(document).ready(function () {
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
+        $("#exit").show();
     });
 
     $("#addevent").click(function () {
@@ -10,8 +11,8 @@ $(document).ready(function () {
             "<td><input type='text' name='name'></td>" +
             "<td><input type='date' name='date'></td>" +
             "<td><input type='text' name='address'></td>" +
-            "<td><input type='text' name='longitude'></td>" +
-            "<td><input type='text' name='latitude'></td>" +
+            "<td><input type='number' name='longitude'></td>" +
+            "<td><input type='number' name='latitude'></td>" +
             "</tr>";
         $("#eventtable").append(row);
     });
@@ -24,7 +25,6 @@ $(document).ready(function () {
         });
         info.shift();
         var events = [];
-        console.log(info);
         for (var i=0; i<info.length; i++){
             var event = new Object();
             var place = new Object();
@@ -44,17 +44,22 @@ $(document).ready(function () {
                 }
             });
         }
-        var data = JSON.stringify(events);
+        var patientdata = JSON.stringify(events);
 
         $.ajax({
             url: "/patientinfo",
-            data: data,
+            data: patientdata,
             type: "POST",
             dataType: "json",
             contentType: "application/json"
         }).done(function (data) {
             alert(data);
         });
+
+    });
+
+    $("#exit").click(function () {
+        $("#exit").hide();
     });
 
     $("#showevents").click(function () {
@@ -65,6 +70,9 @@ $(document).ready(function () {
             $.each(data, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
+                if (eventdate!=null && eventdate.indexOf("T")!=-1){
+                    eventdate = (eventdate.split("T"))[0];//only show the yyyy-mm-dd.
+                }
                 var place = value.place;
                 var address = place.address;
                 var longitude = place.longitude;
@@ -81,6 +89,7 @@ $(document).ready(function () {
                 $("#eventlist").append(row);
                 $("#welcomesection").hide();
                 $("#eventsection").show();
+                $("#exit").show();
             });
         });
     });

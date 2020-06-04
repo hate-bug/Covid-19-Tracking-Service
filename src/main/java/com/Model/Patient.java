@@ -15,13 +15,13 @@ public class Patient {
     @Id
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long Id;
-    @ManyToMany (cascade = CascadeType.ALL)
-    private Set<Event> attendedEvents;
+
+    private String attendedEventIds;
 
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-        this.attendedEvents = new HashSet<Event>();
+        this.attendedEventIds = "";
     }
 
     public long getId(){
@@ -30,11 +30,19 @@ public class Patient {
 
     //Event list should not exist any redundant event, check ID before adding the event
     public void addAttendEvents(Event event){
-        this.attendedEvents.add(event);
+        this.attendedEventIds= this.attendedEventIds + event.getId()+",";
     }
 
-    public Set<Event> getAllEvents(){
-        return this.attendedEvents;
+    public Set<Integer> getAllEventIds(){
+        HashSet<Integer> result = new HashSet<>();
+        if (this.attendedEventIds.equals("")){
+            return result;
+        }
+        String [] ids = this.attendedEventIds.split(",");
+        for (int i=0; i<ids.length; i++){
+            result.add(Integer.valueOf(ids[i]));
+        }
+        return result;
     }
 
     /**

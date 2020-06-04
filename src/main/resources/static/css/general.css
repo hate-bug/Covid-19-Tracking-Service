@@ -1,3 +1,9 @@
 table th td{
     border: 1px solid black;
 }
+
+.center {
+    text-align: center;
+    position: relative;
+    top: 15px;
+}

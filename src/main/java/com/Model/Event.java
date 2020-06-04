@@ -28,14 +28,10 @@ public class Event {
     @ManyToMany (cascade = CascadeType.ALL)
     private Set<Patient> attendedPatients;
 
+    //Default constructor set the time to current date
     @Autowired
     public Event(){
-        this.attendedPatients = new HashSet<>();
-        this.name = "unknown";
-        this.place = new Place();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2000, 01, 01);
-        this.date = calendar.getTime(); //By default set date to 1st/Jan/2000
+        this("unknown", new Place(), Calendar.getInstance().getTime());
     }
 
     @Autowired
@@ -88,10 +84,8 @@ public class Event {
     @Override
     public boolean equals (Object o){
         if (o instanceof Event){
-            if ((((Event)o).getName().equals(this.name))){
-                if (((((Event)o).getDate()).compareTo(this.date)==0)&&(((Event)o).getPlace().equals(this.place))){
-                    return true;
-                }
+            if ((((Event)o).getName().equals(this.name)) && ((((Event)o).getDate()).compareTo(this.date)==0) && ((Event)o).getPlace().equals(this.place)){
+                return true;
             }
         }
         return false;

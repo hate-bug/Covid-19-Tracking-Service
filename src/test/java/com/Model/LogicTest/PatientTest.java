@@ -1,5 +1,8 @@
-package com.Model;
+package com.Model.LogicTest;
 
+import com.Model.Event;
+import com.Model.Patient;
+import com.Model.Place;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,12 +33,12 @@ class PatientTest {
 
     @Test
     void getAllEvents() {
-        assertEquals(0, p.getAllEvents().size());
+        assertEquals(0, p.getAllEventIds().size());
         p.addAttendEvents(game);
-        assertTrue(p.getAllEvents().contains(game));
+        assertTrue(p.getAllEventIds().contains((int) (game.getId())));
         p.addAttendEvents(game);
-        assertEquals(1, p.getAllEvents().size());
+        assertEquals(1, p.getAllEventIds().size());
         p.addAttendEvents(party);
-        assertEquals(2, p.getAllEvents().size());
+        assertEquals(2, p.getAllEventIds().size());
     }
 }

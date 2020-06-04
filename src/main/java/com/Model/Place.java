@@ -24,9 +24,7 @@ public class Place {
 
     @Autowired
     public Place(){
-        this.address = "unknown";
-        this.latitude = 0;
-        this.latitude = 0;
+        this("unknown", 0, 0);
     }
 
     public Place (String address, double longitude, double latitude){
@@ -70,10 +68,8 @@ public class Place {
     public boolean equals (Object o){
         if (o instanceof Place){
             Place p = (Place) o;
-            if ((p.getLatitude() == this.latitude)&&(p.getLongitude()==this.longitude)){
-                if (p.getAddress().equals(this.address)){
-                    return true;
-                }
+            if ((p.getLatitude() == this.latitude)&&(p.getLongitude()==this.longitude)&&p.getAddress().equals(this.address)){
+                return true;
             }
         }
         return false;

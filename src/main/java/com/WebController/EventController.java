@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class FrontController {
+public class EventController {
 
     @Autowired
     private PatientRepository patientRepo;
+
     @Autowired
     private EventRepository eventRepo;
 
@@ -28,8 +29,18 @@ public class FrontController {
     @ResponseBody
     public String receivePatient (@RequestBody List<Event> events){
         Patient tempPatient = new Patient();
+        List<Event> eventList = new ArrayList<>();
+        Iterable<Event> allEvents = this.eventRepo.findAll();
+        allEvents.forEach(eventList::add);
         for (Event e: events){
-            this.eventRepo.save(e);
+            int index = eventList.indexOf(e);
+            if (index>=0){//such event already exists in the repository, just add patient to the event
+                eventList.get(index).addPatient(tempPatient);
+                this.eventRepo.save(eventList.get(index));
+            } else {//new event, add such event to the repository
+                e.addPatient(tempPatient);
+                this.eventRepo.save(e);
+            }
             tempPatient.addAttendEvents(e);
         }
         this.patientRepo.save(tempPatient);
