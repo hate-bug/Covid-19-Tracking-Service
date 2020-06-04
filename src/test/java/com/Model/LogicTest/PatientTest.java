@@ -38,7 +38,5 @@ class PatientTest {
         assertTrue(p.getAllEventIds().contains((int) (game.getId())));
         p.addAttendEvents(game);
         assertEquals(1, p.getAllEventIds().size());
-        p.addAttendEvents(party);
-        assertEquals(2, p.getAllEventIds().size());
     }
 }
