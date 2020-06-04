@@ -50,10 +50,12 @@ $(document).ready(function () {
             url: "/patientinfo",
             data: patientdata,
             type: "POST",
-            dataType: "json",
+            dataType: "text",
             contentType: "application/json"
         }).done(function (data) {
             alert(data);
+        }).fail(function (data) {
+            alert("Server Error");
         });
 
     });
