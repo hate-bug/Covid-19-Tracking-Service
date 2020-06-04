@@ -54,8 +54,11 @@ $(document).ready(function () {
             contentType: "application/json"
         }).done(function (data) {
             alert(data);
+            $("#exit").hide();
+            $("#welcomesection").show();
+            $("#patientinfo").hide();
         }).fail(function (data) {
-            alert("Server Error");
+            alert("Server Error, please confirm data try again.");
         });
 
     });
