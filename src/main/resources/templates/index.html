@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" language="JavaScript"src="javascript/homepage.js"></script>
+    <link rel="stylesheet", href="css/general.css">
+    <meta charset="UTF-8">
+    <title>COVID19-Tracking-System</title>
+</head>
+<body>
+        <a id="exit" style="display: none" href="/">Exit</a>
+        <h1>COVID19_Tracking_System</h1>
+        <br>
+    <div id="welcomesection">
+        <button id="createpatient">Create patient</button>
+        <button id="showevents">Show events</button>
+    </div>
+    <div id="patientinfo" style="display: none">
+        <table id="eventtable" style="width: 80%">
+            <tr>
+                <th>Event name</th>
+                <th>Date</th>
+                <th>Address</th>
+                <th>longitude</th>
+                <th>latitude</th>
+            </tr>
+        </table>
+        <div class="center">
+            <button id="addevent">Add Event</button>
+            <button id="submitpatient">Submit Information</button>
+        </div>
+    </div>
+
+    <div id="eventsection" style="display: none">
+        <table id="eventlist" style="width: 80%">
+            <tr>
+                <th>Event name</th>
+                <th>Date</th>
+                <th>Address</th>
+                <th>longitude</th>
+                <th>latitude</th>
+                <th>Attended Patients</th>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

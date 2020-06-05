@@ -1,6 +1,9 @@
-package com.Model;
+package com.Model.LogicTest;
 
 
+import com.Model.Event;
+import com.Model.Patient;
+import com.Model.Place;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.Calendar;
