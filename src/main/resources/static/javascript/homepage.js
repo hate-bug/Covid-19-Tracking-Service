@@ -14,7 +14,7 @@ $(document).ready(function () {
             "<td><input type='number' name='longitude'></td>" +
             "<td><input type='number' name='latitude'></td>" +
             "</tr>";
-        $("#eventtable").append(row);
+        $("#eventtable tbody").append(row);
     });
 
     $("#submitpatient").click(function () {
@@ -57,6 +57,7 @@ $(document).ready(function () {
             $("#exit").hide();
             $("#welcomesection").show();
             $("#patientinfo").hide();
+            $("#eventtable tbody > tr").empty();
         }).fail(function (data) {
             alert("Server Error, please confirm data try again.");
         });
@@ -82,7 +83,7 @@ $(document).ready(function () {
                 var address = place.address;
                 var longitude = place.longitude;
                 var latitude = place.latitude;
-                var num = (value.attendedPatients).length;
+                var num = (value.patientEventAssociations).length;
                 var row = "<tr style=\"text-align:center\">" +
                     "<td>"+ eventname +"</td>" +
                     "<td>"+ eventdate +"</td>" +

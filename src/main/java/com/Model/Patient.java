@@ -16,12 +16,14 @@ public class Patient {
     @GeneratedValue (strategy = GenerationType.AUTO)
     private long Id;
 
-    private String attendedEventIds;
+    @OneToMany
+    private Set <PatientEventAssociation> patientEventAssociations;
 
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-        this.attendedEventIds = "";
+
+        this.patientEventAssociations = new HashSet<>();
     }
 
     public long getId(){
@@ -29,20 +31,12 @@ public class Patient {
     }
 
     //Event list should not exist any redundant event, check ID before adding the event
-    public void addAttendEvents(Event event){
-        this.attendedEventIds= this.attendedEventIds + event.getId()+",";
+    public void addAssociation (PatientEventAssociation event){
+        this.patientEventAssociations.add(event);
     }
 
-    public Set<Integer> getAllEventIds(){
-        HashSet<Integer> result = new HashSet<>();
-        if (this.attendedEventIds.equals("")){
-            return result;
-        }
-        String [] ids = this.attendedEventIds.split(",");
-        for (int i=0; i<ids.length; i++){
-            result.add(Integer.valueOf(ids[i]));
-        }
-        return result;
+    public Set<PatientEventAssociation> getPatientEventAssication (){
+        return this.patientEventAssociations;
     }
 
     /**

@@ -22,8 +22,8 @@ public class Event {
     @OneToOne (cascade = CascadeType.ALL)
     private Place place;
 
-    @ManyToMany (cascade = CascadeType.ALL)
-    private Set<Patient> attendedPatients;
+    @OneToMany (cascade = CascadeType.ALL)
+    private Set<PatientEventAssociation> patientEventAssociations;
 
     //Default constructor set the time to current date
     @Autowired
@@ -36,7 +36,7 @@ public class Event {
         this.name = name;
         this.place = place;
         this.date = date;
-        this.attendedPatients = new HashSet<>();
+        this.patientEventAssociations = new HashSet<>();
     }
 
     public void setPlace(Place place) {
@@ -67,12 +67,12 @@ public class Event {
         return this.date;
     }
 
-    public void addPatient(Patient patient) {
-        this.attendedPatients.add(patient);
+    public void addAssociation(PatientEventAssociation patient) {
+        this.patientEventAssociations.add(patient);
     }
 
-    public Set<Patient> getAttendedPatients() {
-        return attendedPatients;
+    public Set<PatientEventAssociation> getPatientEventAssociations() {
+        return patientEventAssociations;
     }
 
     /**
@@ -88,14 +88,4 @@ public class Event {
         return false;
     }
 
-    @OneToMany(mappedBy = "event")
-    private Collection<AttendedEvent> attendedEvents;
-
-    public Collection<AttendedEvent> getAttendedEvents() {
-        return attendedEvents;
-    }
-
-    public void setAttendedEvents(Collection<AttendedEvent> attendedEvents) {
-        this.attendedEvents = attendedEvents;
-    }
 }

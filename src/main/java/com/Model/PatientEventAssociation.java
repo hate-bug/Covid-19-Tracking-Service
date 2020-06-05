@@ -5,25 +5,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.*;
 
 @Entity
-public class AttendedEvent {
-
-    @EmbeddedId
-    private AttendedEventKey key;
+public class PatientEventAssociation {
+    @Id
+    @GeneratedValue (strategy = GenerationType.AUTO)
+    private long id;
 
     @ManyToOne
+    @JoinColumn
     Event event;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
+    @JoinColumn
     Patient patient;
 
     boolean isValid;
 
     @Autowired
-    public AttendedEvent(){
+    public PatientEventAssociation(){
         this(new Event(), new Patient(), false);
     }
 
-    public AttendedEvent(Event event, Patient patient, boolean isValid){
+    public PatientEventAssociation(Event event, Patient patient, boolean isValid){
         this.event = event;
         this.patient = patient;
         this.isValid = isValid;

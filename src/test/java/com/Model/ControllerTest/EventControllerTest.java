@@ -30,9 +30,6 @@ public class EventControllerTest {
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    private PatientRepository patientRepository;
-
     /**
      * Test if the page can be loaded correctly
      */
@@ -58,7 +55,6 @@ public class EventControllerTest {
 
     /**
      * Test get events with Json
-     * @throws Exception
      */
     @Test
     public void testGetEvents () throws Exception{
