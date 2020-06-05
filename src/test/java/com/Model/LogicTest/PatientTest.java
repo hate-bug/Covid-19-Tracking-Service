@@ -2,6 +2,7 @@ package com.Model.LogicTest;
 
 import com.Model.Event;
 import com.Model.Patient;
+import com.Model.PatientEventAssociation;
 import com.Model.Place;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ class PatientTest {
     Calendar calendar;
     Date date;
     Place p1, p2;
+    PatientEventAssociation asso1, asso2;
     @BeforeEach
     void setUp() {
         p1 = new Place("TD", 10.02, 11.03);
@@ -28,15 +30,17 @@ class PatientTest {
         game = new Event("game", p1, date);
         party = new Event("Party", p2, date);
         p = new Patient();
+        asso1 = new PatientEventAssociation(game, p, true);
+        asso2 = new PatientEventAssociation(party, p, false);
 
     }
 
     @Test
     void getAllEvents() {
-        assertEquals(0, p.getAllEventIds().size());
-        p.addAttendEvents(game);
-        assertTrue(p.getAllEventIds().contains((int) (game.getId())));
-        p.addAttendEvents(game);
-        assertEquals(1, p.getAllEventIds().size());
+        assertEquals(0, p.getPatientEventAssication().size());
+        p.addAssociation(asso1);
+        assertTrue(p.getPatientEventAssication().contains(asso1));
+        p.addAssociation(asso2);
+        assertEquals(2, p.getPatientEventAssication().size());
     }
 }

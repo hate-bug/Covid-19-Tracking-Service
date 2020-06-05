@@ -1,6 +1,8 @@
 package com.WebController;
 
 import com.Model.Patient;
+import com.Model.PatientEventAssociation;
+import com.Repository.AssociationRepository;
 import com.Repository.EventRepository;
 import com.Repository.PatientRepository;
 import com.Model.Event;
@@ -20,6 +22,9 @@ public class EventController {
     @Autowired
     private EventRepository eventRepo;
 
+    @Autowired
+    private AssociationRepository assoicationRepo;
+
     @GetMapping("/")
     public String homePage() {
         return "index";
@@ -32,18 +37,20 @@ public class EventController {
         List<Event> eventList = new ArrayList<>();
         Iterable<Event> allEvents = this.eventRepo.findAll();
         allEvents.forEach(eventList::add);
+        PatientEventAssociation association;
         for (Event e: events){
             int index = eventList.indexOf(e);
-            if (index>=0){//such event already exists in the repository, just add patient to the event
-                eventList.get(index).addPatient(tempPatient);
-                this.eventRepo.save(eventList.get(index));
-            } else {//new event, add such event to the repository
-                e.addPatient(tempPatient);
-                this.eventRepo.save(e);
+            if (index<0) {//new Event, save it to Repo
+                association = new PatientEventAssociation(e, tempPatient, true);
+                e.addAssociation(association);
+                eventRepo.save(e);
+            } else {//event already exist, just save association
+                Event event = eventList.get(index);
+                association = new PatientEventAssociation(event, tempPatient, true);
+                event.addAssociation(association);
+                eventRepo.save(event);
             }
-            tempPatient.addAttendEvents(e);
         }
-        this.patientRepo.save(tempPatient);
         return "success";
     }
 

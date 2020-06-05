@@ -3,6 +3,7 @@ package com.Model.LogicTest;
 
 import com.Model.Event;
 import com.Model.Patient;
+import com.Model.PatientEventAssociation;
 import com.Model.Place;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ class EventTest {
     Event footballGame, shopEvent;
     Patient p1, p2;
     Calendar calendar;
+    PatientEventAssociation asso1, asso2;
 
     @BeforeEach
     void setUp() {
@@ -28,19 +30,18 @@ class EventTest {
         shopEvent = new Event("Shopping", td, date);
         p1 = new Patient();
         p2 = new Patient();
+        asso1 = new PatientEventAssociation(footballGame, p1, true);
+        asso2 = new PatientEventAssociation(shopEvent, p2, true);
     }
 
    @Test
     void getAttendedPatientNum() {
-       assertEquals(0, footballGame.getAttendedPatients().size());
-       footballGame.addPatient(p1);
-       assertEquals(1, footballGame.getAttendedPatients().size());
+       assertEquals(0, footballGame.getPatientEventAssociations().size());
+       footballGame.addAssociation(asso1);
+       assertEquals(1, footballGame.getPatientEventAssociations().size());
        //add a redundant patient
-       footballGame.addPatient(p1);
-       assertEquals(1, footballGame.getAttendedPatients().size());
-       //add a different patient
-       footballGame.addPatient(p2);
-       assertEquals(2, footballGame.getAttendedPatients().size());
+       shopEvent.addAssociation(asso2);
+       assertEquals(1, shopEvent.getPatientEventAssociations().size());
     }
 
 }

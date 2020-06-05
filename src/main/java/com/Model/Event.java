@@ -8,10 +8,7 @@ package com.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Event {
@@ -25,8 +22,8 @@ public class Event {
     @OneToOne (cascade = CascadeType.ALL)
     private Place place;
 
-    @ManyToMany (cascade = CascadeType.ALL)
-    private Set<Patient> attendedPatients;
+    @OneToMany (cascade = CascadeType.ALL)
+    private Set<PatientEventAssociation> patientEventAssociations;
 
     //Default constructor set the time to current date
     @Autowired
@@ -39,7 +36,7 @@ public class Event {
         this.name = name;
         this.place = place;
         this.date = date;
-        this.attendedPatients = new HashSet<>();
+        this.patientEventAssociations = new HashSet<>();
     }
 
     public void setPlace(Place place) {
@@ -70,12 +67,12 @@ public class Event {
         return this.date;
     }
 
-    public void addPatient(Patient patient) {
-        this.attendedPatients.add(patient);
+    public void addAssociation(PatientEventAssociation patient) {
+        this.patientEventAssociations.add(patient);
     }
 
-    public Set<Patient> getAttendedPatients() {
-        return attendedPatients;
+    public Set<PatientEventAssociation> getPatientEventAssociations() {
+        return patientEventAssociations;
     }
 
     /**
@@ -90,4 +87,5 @@ public class Event {
         }
         return false;
     }
+
 }
