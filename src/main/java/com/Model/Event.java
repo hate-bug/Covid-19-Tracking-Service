@@ -8,10 +8,7 @@ package com.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Event {
@@ -89,5 +86,16 @@ public class Event {
             }
         }
         return false;
+    }
+
+    @OneToMany(mappedBy = "event")
+    private Collection<AttendedEvent> attendedEvents;
+
+    public Collection<AttendedEvent> getAttendedEvents() {
+        return attendedEvents;
+    }
+
+    public void setAttendedEvents(Collection<AttendedEvent> attendedEvents) {
+        this.attendedEvents = attendedEvents;
     }
 }
