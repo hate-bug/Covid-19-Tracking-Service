@@ -2,7 +2,7 @@ package com.WebController;
 
 import com.Model.Patient;
 import com.Model.PatientEventAssociation;
-import com.Repository.AssoicationRepository;
+import com.Repository.AssociationRepository;
 import com.Repository.EventRepository;
 import com.Repository.PatientRepository;
 import com.Model.Event;
@@ -23,7 +23,7 @@ public class EventController {
     private EventRepository eventRepo;
 
     @Autowired
-    private AssoicationRepository assoicationRepo;
+    private AssociationRepository assoicationRepo;
 
     @GetMapping("/")
     public String homePage() {
