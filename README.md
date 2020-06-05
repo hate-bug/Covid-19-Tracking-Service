@@ -29,7 +29,7 @@ For example:
 ## Developers & Funding
 * [Babak Esfandiari](http://www.sce.carleton.ca/faculty/esfandiari.html) 
 * [Zhe Ji](https://www.linkedin.com/in/zhe-ji-ba1a51142/) 
-* This project is funded by [Carleton University] (https://carleton.ca/)
+* This project is funded by [Carleton University](https://carleton.ca/)
 
 
 
