@@ -10,6 +10,4 @@ import java.util.List;
 @Component
 public interface AssoicationRepository extends CrudRepository<PatientEventAssociation, Long> {
 
-    @Query("select PatientEventAssociation from PatientEventAssociation where PatientEventAssociation .isValid=?1")
-    List<PatientEventAssociation> getAllByisValid (boolean isValid);
 }
