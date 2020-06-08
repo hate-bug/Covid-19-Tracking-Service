@@ -84,7 +84,7 @@ public class EventController {
     @PostMapping(value = "/userregister", consumes = "application/json")
     @ResponseBody
     public String userRegistration(@RequestBody User user){
-        if (this.userRepository.findUserByEmailAddressIgnoreCase(user.getEmailAddress())==null){
+        if (this.userRepository.findUserByEmailAddressIgnoreCase(user.getEmailAddress())!=null){
             return "user already exists";
         }
         userRepository.save(user);
@@ -97,10 +97,11 @@ public class EventController {
         message.setText("To confirm your email address, please click here:"
         + "http://localhost:8080/confirmaccount?token="+token.getConfirmationToken());
         emailSenderService.sendEmail(message);
-        return "Confirmation sent to: "+user.getEmailAddress();
+        this.confirmationTokenRepository.save(token);
+        return "Confirmation email sent to: "+user.getEmailAddress();
     }
 
-    @RequestMapping (value = "confirmaccount", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping (value = "/confirmaccount", method = {RequestMethod.POST, RequestMethod.GET})
     public String ConfirmEmail (@RequestParam("token") String confirmationToken, Model model){
         ConfirmationToken token = this.confirmationTokenRepository.findByConfirmationToken(confirmationToken);
         if (token!=null){//valid user
@@ -115,8 +116,9 @@ public class EventController {
         }
     }
 
-    @GetMapping (value = "login", consumes = "application/json")
-    public String login (@RequestParam User longinUser){
+    @PostMapping (value = "/userlogin", consumes = "application/json")
+    @ResponseBody
+    public String login (@RequestBody User longinUser){
         User user = this.userRepository.findUserByEmailAddressIgnoreCase(longinUser.getEmailAddress());
         if (user!=null){
             if (user.isEnabled()){

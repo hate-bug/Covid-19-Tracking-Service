@@ -101,8 +101,59 @@ $(document).ready(function () {
     });
 
     $("#loginbutton").click(function () {
+        $("#welcomesection").hide();
         $("#loginsection").show();
-
+        $("#exitsection").show();
     });
 
+    $("#registerbutton").click(function () {
+        $("#loginsection").hide();
+        $("#registersection").show();
+    });
+
+    $("#loginsubmit").click(function () {
+        var user = new Object();
+        user.emailAddress = $("#emaillogin").val();
+        user.password = $("#passwordlogin").val();
+        var data = JSON.stringify(user);
+        $.ajax({
+            url: "/userlogin",
+            type: "POST",
+            data: data,
+            dataType: "text",
+            contentType: "application/json"
+        }).done(function (data) {
+            if (data == "success"){
+                alert("Successfully log in");
+            } else if (data == "fail"){
+                alert(data);
+            } else if (data == "Please verify you email address"){
+                alert (data);
+            }
+        }).fail(function () {
+            alert("Server error;")
+        });
+    });
+
+    $("#registersubmit").click(function () {
+        if ($("#passwordregister").val()!= $("#passwordconfirm").val()){
+            alert("password not the same, please check");
+            return;
+        }
+        var user = new Object();
+        user.emailAddress = $("#emailregister").val();
+        user.password = $("#passwordregister").val();
+        var postdata = JSON.stringify(user);
+        $.ajax({
+            url: "/userregister",
+            type: "POST",
+            data: postdata,
+            dataType: "text",
+            contentType: "application/json"
+        }).done(function (data) {
+            alert(data);
+        }).fail(function () {
+            alert("Server error;")
+        });
+    });
 });
