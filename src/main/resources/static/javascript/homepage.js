@@ -100,4 +100,9 @@ $(document).ready(function () {
         });
     });
 
+    $("#loginbutton").click(function () {
+        $("#loginsection").show();
+
+    });
+
 });

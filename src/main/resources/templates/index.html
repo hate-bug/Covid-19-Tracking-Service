@@ -14,6 +14,7 @@
     <div id="welcomesection">
         <button id="createpatient">Create patient</button>
         <button id="showevents">Show events</button>
+        <button id="loginbutton">Log in</button>
     </div>
     <div id="patientinfo" style="display: none">
         <table id="eventtable" style="width: 80%">
@@ -45,6 +46,25 @@
                 <th>Attended Patients</th>
             </tr>
         </table>
+    </div>
+
+    <div id="loginsection" style="display: none">
+        <span>Email Address: </span>
+        <input id="emaillogin" type="text"/>
+        <br>
+        <span>Password</span>
+        <input id="passwordlogin" type="text">
+        <br>
+        <a id="registerbutton">Register</a>
+    </div>
+
+    <div id="registersection" style="display: none">
+        <span>Email Address: </span>
+        <input id="emailregister" type="text"/>
+        <br>
+        <input id="passwordregister" type="text">
+        <br>
+        <a id="registerconfirm">Confirm</a>
     </div>
 </body>
 </html>
