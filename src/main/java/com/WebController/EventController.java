@@ -4,7 +4,9 @@ import com.Model.*;
 import com.Repository.*;
 import com.Service.EmailSenderService;
 import com.Service.MessageSender;
+import org.assertj.core.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,9 +83,16 @@ public class EventController {
      */
     @GetMapping(value = "/allEvents", produces = "application/json")
     @ResponseBody
-    public List<Event> getAllEvents (){
-        List<Event> list = new ArrayList<>();
-        Iterable<Event> events = this.eventRepo.findAll();
+    public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum, ServletResponse response){
+        Iterable<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 5));
+        Iterable<Event> nextPage = this.eventRepo.findAll( PageRequest.of(pageNum, 5));
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        if (IterableUtil.sizeOf(nextPage)>0){ //have next page
+            httpServletResponse.addHeader("has-next-page", "true");
+        } else {
+            httpServletResponse.addHeader("has-next-page", "false");
+        }
+        List<Event> list=new ArrayList<>();
         events.forEach(list::add);
         return list;
     }

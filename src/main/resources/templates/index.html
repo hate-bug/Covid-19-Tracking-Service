@@ -35,25 +35,32 @@
         </div>
     </div>
 
-    <div id="eventsection" style="display: none">
+    <div class="center" id="eventsection" style="display: none">
         <table id="eventlist" style="width: 80%">
-            <tr>
-                <th>Event name</th>
-                <th>Date</th>
-                <th>Address</th>
-                <th>longitude</th>
-                <th>latitude</th>
-                <th>Attended Patients</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Event name</th>
+                    <th>Date</th>
+                    <th>Address</th>
+                    <th>longitude</th>
+                    <th>latitude</th>
+                    <th>Attended Patients</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
         </table>
+        <div class="center">
+            <button id="lastpagebutton" class="center" style="display: none">Last page</button>
+            <button id="nextpagebutton" class="center" style="display: none">Next page</button>
+        </div>
     </div>
 
     <div id="loginsection" style="display: none">
-        <span>Log in</span>
+        <span>Log in: </span>
         <span>Email Address: </span>
         <input id="emaillogin" type="text"/>
         <br>
-        <span>Password</span>
+        <span>Password: </span>
         <input id="passwordlogin" type="text">
         <br>
         <button id="loginsubmit">Log in</button>

@@ -66,7 +66,7 @@ public class EventControllerTest {
         Place p2 = new Place("Work", 2222, 2222);
         Event e2 = new Event("E2", p2, calendar.getTime());
         this.eventRepository.save(e2);
-        mockMvc.perform(get("/allEvents"))
+        mockMvc.perform(get("/allEvents?page=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect((jsonPath("$[0].name", is(e1.getName()))))

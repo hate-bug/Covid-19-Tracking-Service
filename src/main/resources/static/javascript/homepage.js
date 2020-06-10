@@ -68,11 +68,12 @@ $(document).ready(function () {
         $("#exit").hide();
     });
 
-    $("#showevents").click(function () {
+    function showEvents(currentPageNum){
+        $("#eventlist tbody").empty();
         $.ajax({
-           url: "/allEvents",
-           type: "GET"
-        }).done(function (data) {
+            url: "/allEvents?page="+currentPageNum,
+            type: "GET"
+        }).done(function (data, textStatus, request) {
             $.each(data, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
@@ -91,19 +92,44 @@ $(document).ready(function () {
                     "<td>"+ longitude +"</td>" +
                     "<td>"+ latitude +"</td>" +
                     "<td>"+ num +"</td>" +
-                    "</tr>"
-                $("#eventlist").append(row);
-                $("#welcomesection").hide();
-                $("#eventsection").show();
-                $("#exit").show();
+                    "</tr>";
+                $("#eventlist tbody").append(row);
             });
+            $("#nextpagebutton").hide();
+            $("#lastpagebutton").hide();
+
+            if (request.getResponseHeader("has-next-page")=="true"){
+                $("#nextpagebutton").show();
+                $("#nextpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)+1);
+            }
+            if (currentPageNum>1){
+                $("#lastpagebutton").show();
+                $("#lastpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)-1);
+            }
+            $("#welcomesection").hide();
+            $("#eventsection").show();
+            $("#exit").show();
         });
+    }
+
+    $("#nextpagebutton").click(function () {
+        var pagenum = $("#nextpagebutton").attr("pagenumber");
+        showEvents(pagenum);
+    });
+
+    $("#lastpagebutton").click(function () {
+        var pagenum = $("#lastpagebutton").attr("pagenumber");
+        showEvents(pagenum);
+    });
+
+    $("#showevents").click(function () {
+       showEvents(1);
     });
 
     $("#loginbutton").click(function () {
         $("#welcomesection").hide();
         $("#loginsection").show();
-        $("#exitsection").show();
+        $("#exit").show();
     });
 
     $("#registerbutton").click(function () {
