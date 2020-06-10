@@ -50,7 +50,7 @@ public class EventControllerTest {
                 .contentType(APPLICATION_JSON)
                 .accept(TEXT_HTML))
                 .andExpect(status().isOk())
-                .andExpect(content().string("success"));
+                .andExpect(content().string("saved"));
     }
 
     /**

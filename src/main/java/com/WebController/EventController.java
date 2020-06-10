@@ -3,12 +3,16 @@ package com.WebController;
 import com.Model.*;
 import com.Repository.*;
 import com.Service.EmailSenderService;
+import com.Service.MessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,9 @@ public class EventController {
     @Autowired
     private EmailSenderService emailSenderService;
 
+    @Autowired
+    private MessageSender messageSender;
+
     @GetMapping("/")
     public String homePage() {
         return "index";
@@ -45,14 +52,12 @@ public class EventController {
      * Event duplication should be avoided.
      */
     @PostMapping(value = "/patientinfo", consumes = "application/json")
-    @ResponseBody
-    public String receivePatient (@RequestBody List<Event> events){
+    public ResponseEntity<String> receivePatient (@RequestBody List<Event> events){
         Patient tempPatient = new Patient();//created patient
         List<Event> eventList = new ArrayList<>();
-        Iterable<Event> allEvents = this.eventRepo.findAll();//pull all events from DB
-        allEvents.forEach(eventList::add);//add them to the list
         PatientEventAssociation association;
         for (Event e: events){
+            eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
             int index = eventList.indexOf(e);
             if (index<0) {//new Event, save it to Repo
                 association = new PatientEventAssociation(e, tempPatient, true);
@@ -65,7 +70,7 @@ public class EventController {
                 eventRepo.save(event);
             }
         }
-        return "success";
+        return new ResponseEntity<>("saved", HttpStatus.OK);
     }
 
     /**
@@ -82,52 +87,48 @@ public class EventController {
     }
 
     @PostMapping(value = "/userregister", consumes = "application/json")
-    @ResponseBody
-    public String userRegistration(@RequestBody User user){
+    public ResponseEntity<String> userRegistration(@RequestBody User user, HttpServletRequest request){
         if (this.userRepository.findUserByEmailAddressIgnoreCase(user.getEmailAddress())!=null){
-            return "user already exists";
+            return new ResponseEntity<>("user already exists", HttpStatus.FORBIDDEN);
         }
         userRepository.save(user);
         ConfirmationToken token = new ConfirmationToken(user);
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmailAddress());
-        message.setSubject("COVID-19 TRacking System Registration.");
-        message.setFrom("covidtracking08@gmail.com");
-        message.setText("To confirm your email address, please click here:"
-        + "http://localhost:8080/confirmaccount?token="+token.getConfirmationToken());
-        emailSenderService.sendEmail(message);
+        String rootAddress = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
+        this.messageSender.sendRegisterEmail(user.getEmailAddress(), token.getConfirmationToken(), rootAddress);
         this.confirmationTokenRepository.save(token);
-        return "Confirmation email sent to: "+user.getEmailAddress();
+        return new ResponseEntity<>("Confirmation email sent to: "+user.getEmailAddress(), HttpStatus.OK);
     }
 
     @RequestMapping (value = "/confirmaccount", method = {RequestMethod.POST, RequestMethod.GET})
-    public String ConfirmEmail (@RequestParam("token") String confirmationToken, Model model){
+    public ModelAndView ConfirmEmail (@RequestParam("token") String confirmationToken, Model model){
         ConfirmationToken token = this.confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+        ModelAndView modelview;
         if (token!=null){//valid user
             String emailAddress = token.getUser().getEmailAddress();
             User user = userRepository.findUserByEmailAddressIgnoreCase(emailAddress);
             user.setEnable(true);
             userRepository.save(user);
             model.addAttribute("emailAddress", emailAddress);
-            return "RegisterSuccess";
+            modelview = new ModelAndView("RegisterSuccess");
+            modelview.setStatus(HttpStatus.OK);
         }else {
-            return "Error";
+            modelview = new ModelAndView("Error");
+            modelview.setStatus(HttpStatus.NOT_FOUND);
         }
+        return modelview;
     }
 
     @PostMapping (value = "/userlogin", consumes = "application/json")
-    @ResponseBody
-    public String login (@RequestBody User longinUser){
+    public ResponseEntity<String> login (@RequestBody User longinUser){
         User user = this.userRepository.findUserByEmailAddressIgnoreCase(longinUser.getEmailAddress());
         if (user!=null){
             if (user.isEnabled()){
-                return "success";
+                return new ResponseEntity<>("Successfully log in", HttpStatus.OK);
             } else {
-                return "Please verify you email address";
+                return new ResponseEntity<>("Please verify you email address", HttpStatus.UNAUTHORIZED);
             }
         }
-        return "fail";
+        return new ResponseEntity<>("Email or password not correct.", HttpStatus.UNAUTHORIZED);
     }
 
 }

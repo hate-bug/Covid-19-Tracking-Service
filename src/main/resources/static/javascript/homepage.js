@@ -123,15 +123,9 @@ $(document).ready(function () {
             dataType: "text",
             contentType: "application/json"
         }).done(function (data) {
-            if (data == "success"){
-                alert("Successfully log in");
-            } else if (data == "fail"){
-                alert(data);
-            } else if (data == "Please verify you email address"){
-                alert (data);
-            }
-        }).fail(function () {
-            alert("Server error;")
+            alert(data);
+        }).fail(function (data) {
+            alert(data.responseText);
         });
     });
 
