@@ -31,5 +31,7 @@ For example:
 * [Zhe Ji](https://www.linkedin.com/in/zhe-ji-ba1a51142/) 
 * This project is funded by [Carleton University](https://carleton.ca/)
 
-
+## Build & Deployment
+Build: https://travis-ci.com/github/hate-bug/Covid-19-Tracking-Service
+Deploy: https://covid-19-tracking-system.herokuapp.com/
 
