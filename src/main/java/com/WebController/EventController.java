@@ -2,18 +2,14 @@ package com.WebController;
 
 import com.Model.*;
 import com.Repository.*;
-import com.Service.EmailSenderService;
-import com.Service.MessageSender;
+import com.Service.UserSessionService;
 import org.assertj.core.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,25 +20,10 @@ import java.util.List;
 public class EventController {
 
     @Autowired
-    private PatientRepository patientRepo;
-
-    @Autowired
     private EventRepository eventRepo;
 
     @Autowired
-    private AssociationRepository assoicationRepo;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
-
-    @Autowired
-    private EmailSenderService emailSenderService;
-
-    @Autowired
-    private MessageSender messageSender;
+    private UserSessionService userSessionService;
 
     @GetMapping("/")
     public String homePage() {
@@ -56,20 +37,26 @@ public class EventController {
      * Event duplication should be avoided.
      */
     @PostMapping(value = "/patientinfo", consumes = "application/json")
-    public ResponseEntity<String> receivePatient (@RequestBody List<Event> events){
+    public ResponseEntity<String> receivePatient (@RequestBody List<Event> events, HttpServletRequest request){
         Patient tempPatient = new Patient();//created patient
-        List<Event> eventList = new ArrayList<>();
+        List<Event> eventList;
         PatientEventAssociation association;
+        //Assume registered users are valid here!
+        boolean isValid = false;
+        if (this.userSessionService.getUserFromRequest(request)!=null){
+            User user = this.userSessionService.getUserFromRequest(request);
+            isValid = true;
+        }
         for (Event e: events){
             eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
             int index = eventList.indexOf(e);
             if (index<0) {//new Event, save it to Repo
-                association = new PatientEventAssociation(e, tempPatient, true);
+                association = new PatientEventAssociation(e, tempPatient, isValid);
                 e.addAssociation(association);
                 eventRepo.save(e);
             } else {//event already exist, just save association
                 Event event = eventList.get(index);
-                association = new PatientEventAssociation(event, tempPatient, true);
+                association = new PatientEventAssociation(event, tempPatient, isValid);
                 event.addAssociation(association);
                 eventRepo.save(event);
             }
@@ -84,8 +71,8 @@ public class EventController {
     @GetMapping(value = "/allEvents", produces = "application/json")
     @ResponseBody
     public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum, ServletResponse response){
-        Iterable<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 5));
-        Iterable<Event> nextPage = this.eventRepo.findAll( PageRequest.of(pageNum, 5));
+        Iterable<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 20));
+        Iterable<Event> nextPage = this.eventRepo.findAll( PageRequest.of(pageNum, 20));
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         if (IterableUtil.sizeOf(nextPage)>0){ //have next page
             httpServletResponse.addHeader("has-next-page", "true");
@@ -97,49 +84,5 @@ public class EventController {
         return list;
     }
 
-    @PostMapping(value = "/userregister", consumes = "application/json")
-    public ResponseEntity<String> userRegistration(@RequestBody User user, HttpServletRequest request){
-        if (this.userRepository.findUserByEmailAddressIgnoreCase(user.getEmailAddress())!=null){
-            return new ResponseEntity<>("user already exists", HttpStatus.FORBIDDEN);
-        }
-        userRepository.save(user);
-        ConfirmationToken token = new ConfirmationToken(user);
-        String rootAddress = request.getRequestURL().toString().replace(request.getRequestURI(), request.getContextPath());
-        this.messageSender.sendRegisterEmail(user.getEmailAddress(), token.getConfirmationToken(), rootAddress);
-        this.confirmationTokenRepository.save(token);
-        return new ResponseEntity<>("Confirmation email sent to: "+user.getEmailAddress(), HttpStatus.OK);
-    }
-
-    @RequestMapping (value = "/confirmaccount", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView ConfirmEmail (@RequestParam("token") String confirmationToken, Model model){
-        ConfirmationToken token = this.confirmationTokenRepository.findByConfirmationToken(confirmationToken);
-        ModelAndView modelview;
-        if (token!=null){//valid user
-            String emailAddress = token.getUser().getEmailAddress();
-            User user = userRepository.findUserByEmailAddressIgnoreCase(emailAddress);
-            user.setEnable(true);
-            userRepository.save(user);
-            model.addAttribute("emailAddress", emailAddress);
-            modelview = new ModelAndView("RegisterSuccess");
-            modelview.setStatus(HttpStatus.OK);
-        }else {
-            modelview = new ModelAndView("Error");
-            modelview.setStatus(HttpStatus.NOT_FOUND);
-        }
-        return modelview;
-    }
-
-    @PostMapping (value = "/userlogin", consumes = "application/json")
-    public ResponseEntity<String> login (@RequestBody User longinUser){
-        User user = this.userRepository.findUserByEmailAddressIgnoreCase(longinUser.getEmailAddress());
-        if (user!=null){
-            if (user.isEnabled()){
-                return new ResponseEntity<>("Successfully log in", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Please verify you email address", HttpStatus.UNAUTHORIZED);
-            }
-        }
-        return new ResponseEntity<>("Email or password not correct.", HttpStatus.UNAUTHORIZED);
-    }
 
 }

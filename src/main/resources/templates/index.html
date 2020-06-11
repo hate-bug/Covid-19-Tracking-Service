@@ -7,79 +7,86 @@
     <meta charset="UTF-8">
     <title>COVID19-Tracking-System</title>
 </head>
-<body>
+    <body>
         <a id="exit" style="display: none" href="/">Exit</a>
         <h1>COVID19_Tracking_System</h1>
-        <br>
-    <div id="welcomesection">
-        <button id="createpatient">Create patient</button>
-        <button id="showevents">Show events</button>
-        <button id="loginbutton">Log in</button>
-    </div>
-    <div id="patientinfo" style="display: none">
-        <table id="eventtable" style="width: 80%">
-            <thead>
-                <tr>
-                    <th>Event name</th>
-                    <th>Date</th>
-                    <th>Address</th>
-                    <th>longitude</th>
-                    <th>latitude</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div class="center">
-            <button id="addevent">Add Event</button>
-            <button id="submitpatient">Submit Information</button>
+        <button class="toprightcorner" id="loginbutton" style="display: none">Log in</button>
+        <div class="toprightcorner" id="useraccountsection"style="display: none">
+            <span>Login as </span>
+            <span id="useremail"></span>
+            <br>
+            <a href="/" id="logoutbutton">Logout</a>
         </div>
-    </div>
-
-    <div class="center" id="eventsection" style="display: none">
-        <table id="eventlist" style="width: 80%">
-            <thead>
-                <tr>
-                    <th>Event name</th>
-                    <th>Date</th>
-                    <th>Address</th>
-                    <th>longitude</th>
-                    <th>latitude</th>
-                    <th>Attended Patients</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div class="center">
-            <button id="lastpagebutton" class="center" style="display: none">Last page</button>
-            <button id="nextpagebutton" class="center" style="display: none">Next page</button>
+        <br>
+        <div id="welcomesection">
+            <button id="createpatient">Create patient</button>
+            <button id="showevents">Show events</button>
         </div>
-    </div>
+        <div id="patientinfo" style="display: none">
+            <table id="eventtable" style="width: 80%">
+                <thead>
+                    <tr>
+                        <th>Event name</th>
+                        <th>Date</th>
+                        <th>Address</th>
+                        <th>longitude</th>
+                        <th>latitude</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="center">
+                <button id="addevent">Add Event</button>
+                <button id="submitpatient">Submit Information</button>
+            </div>
+        </div>
 
-    <div id="loginsection" style="display: none">
-        <span>Log in: </span>
-        <span>Email Address: </span>
-        <input id="emaillogin" type="text"/>
-        <br>
-        <span>Password: </span>
-        <input id="passwordlogin" type="text">
-        <br>
-        <button id="loginsubmit">Log in</button>
-        <button id="registerbutton">Register</button>
-    </div>
+        <div class="center" id="eventsection" style="display: none">
+            <table id="eventlist" style="width: 80%">
+                <thead>
+                    <tr>
+                        <th>Event name</th>
+                        <th>Date</th>
+                        <th>Address</th>
+                        <th>longitude</th>
+                        <th>latitude</th>
+                        <th>Attended Patients</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="center">
+                <button id="lastpagebutton" class="center" style="display: none">Last page</button>
+                <button id="nextpagebutton" class="center" style="display: none">Next page</button>
+            </div>
+        </div>
 
-    <div id="registersection" style="display: none">
-        <span>Create user account</span>
-        <br>
-        <span>Email Address: </span>
-        <input id="emailregister" type="text"/>
-        <br>
-        <span>Password: </span>
-        <input id="passwordregister" type="text"/>
-        <br>
-        <span>Confirm password</span>
-        <input id="passwordconfirm" type="text"/>
-        <br>
-        <button id="registersubmit">Register</button>
-    </div>
-</body>
+        <div id="loginsection" style="display: none">
+            <span>Log in: </span>
+            <br>
+            <span>Email Address: </span>
+            <input id="emaillogin" type="text"/>
+            <br>
+            <span>Password: </span>
+            <input id="passwordlogin" type="text">
+            <br>
+            <button id="loginsubmit">Log in</button>
+            <button id="registerbutton">Register</button>
+        </div>
+
+        <div id="registersection" style="display: none">
+            <span>Create user account</span>
+            <br>
+            <span>Email Address: </span>
+            <input id="emailregister" type="text"/>
+            <br>
+            <span>Password: </span>
+            <input id="passwordregister" type="text"/>
+            <br>
+            <span>Confirm password</span>
+            <input id="passwordconfirm" type="text"/>
+            <br>
+            <button id="registersubmit">Register</button>
+        </div>
+    </body>
 </html>

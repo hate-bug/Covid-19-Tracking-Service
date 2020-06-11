@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    setUserAccountSection();
+
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
@@ -149,7 +151,12 @@ $(document).ready(function () {
             dataType: "text",
             contentType: "application/json"
         }).done(function (data) {
+            sessionStorage.setItem("useremailaddress", user.emailAddress);
             alert(data);
+            setUserAccountSection();
+            $("#loginsection").hide();
+            $("#welcomesection").show();
+            $("#exit").hide();
         }).fail(function (data) {
             alert(data.responseText);
         });
@@ -172,8 +179,27 @@ $(document).ready(function () {
             contentType: "application/json"
         }).done(function (data) {
             alert(data);
+            $("#registersection").hide();
+            $("#loginsection").show();
         }).fail(function () {
             alert("Server error;")
         });
+    });
+
+    function setUserAccountSection() {
+        if (sessionStorage.getItem("useremailaddress")!=null){//user already logged in
+            var emailAddress = sessionStorage.getItem("useremailaddress");
+            $("#useremail").text(emailAddress);
+            $("#useraccountsection").show();
+            $("#loginbutton").hide();
+        } else {
+            $("#loginbutton").show();
+            $("#useraccountsection").hide();
+        }
+    }
+
+    $("#logoutbutton").click(function () {
+        sessionStorage.removeItem("useremailaddress");
+        setUserAccountSection();
     });
 });

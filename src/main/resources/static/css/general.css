@@ -7,3 +7,8 @@ table th td{
     position: relative;
     top: 15px;
 }
+.toprightcorner {
+    position:absolute;
+    top:30px;
+    right:30px;
+}
