@@ -32,6 +32,7 @@ For example:
 * This project is funded by [Carleton University](https://carleton.ca/)
 
 ## Build & Deployment
-Build: https://travis-ci.com/github/hate-bug/Covid-19-Tracking-Service
-Deploy: https://covid-19-tracking-system.herokuapp.com/
+Build in Travis https://travis-ci.com/github/hate-bug/Covid-19-Tracking-Service
+
+Deploy in Haroku: https://covid-19-tracking-system.herokuapp.com/
 
