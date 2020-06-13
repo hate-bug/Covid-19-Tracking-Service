@@ -34,5 +34,5 @@ For example:
 ## Build & Deployment
 Build in Travis https://travis-ci.com/github/hate-bug/Covid-19-Tracking-Service
 
-Deploy in Haroku: https://covid-19-tracking-system.herokuapp.com/
+Deploy in Heroku: https://covid-19-tracking-system.herokuapp.com/
 
