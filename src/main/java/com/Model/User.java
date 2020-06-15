@@ -55,6 +55,4 @@ public class User {
     public void setEnable (boolean isEnabled){
         this.isEnabled = isEnabled;
     }
-
-
 }
