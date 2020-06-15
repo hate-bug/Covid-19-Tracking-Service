@@ -10,16 +10,13 @@ import java.util.UUID;
 public class ConfirmationToken {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private long id;
+    private String confirmationToken;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
     @OneToOne
     private User user;
-
-    private String confirmationToken;
 
     @Autowired
     public ConfirmationToken (){

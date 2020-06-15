@@ -49,7 +49,7 @@ public class EventControllerTest {
         mockMvc.perform(post("/patientinfo").content(jsonString)
                 .contentType(APPLICATION_JSON)
                 .accept(TEXT_HTML))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string("saved"));
     }
 
@@ -68,13 +68,13 @@ public class EventControllerTest {
         this.eventRepository.save(e2);
         mockMvc.perform(get("/allEvents?page=1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect((jsonPath("$[0].name", is(e1.getName()))))
-                .andExpect((jsonPath("$[0].place.address", is(p1.getAddress()))))
-                .andExpect(jsonPath("$[0].place.longitude", is(p1.getLongitude())))
-                .andExpect(jsonPath("$[1].name", is(e2.getName())))
-                .andExpect(jsonPath("$[1].place.address", is(p2.getAddress())))
-                .andExpect(jsonPath("$[1].place.latitude", is(p2.getLatitude())));
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect((jsonPath("$.content[0].name", is(e1.getName()))))
+                .andExpect((jsonPath("$.content[0].place.address", is(p1.getAddress()))))
+                .andExpect(jsonPath("$.content[0].place.longitude", is(p1.getLongitude())))
+                .andExpect(jsonPath("$.content[1].name", is(e2.getName())))
+                .andExpect(jsonPath("$.content[1].place.address", is(p2.getAddress())))
+                .andExpect(jsonPath("$.content[1].place.latitude", is(p2.getLatitude())));
     }
 
 }

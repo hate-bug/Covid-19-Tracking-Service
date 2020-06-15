@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    checkuser();
+
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
@@ -74,7 +76,8 @@ $(document).ready(function () {
             url: "/allEvents?page="+currentPageNum,
             type: "GET"
         }).done(function (data, textStatus, request) {
-            $.each(data, function (index, value) {
+            var content = data.content;
+            $.each(content, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
                 if (eventdate!=null && eventdate.indexOf("T")!=-1){
@@ -98,11 +101,11 @@ $(document).ready(function () {
             $("#nextpagebutton").hide();
             $("#lastpagebutton").hide();
 
-            if (request.getResponseHeader("has-next-page")=="true"){
+            if (data.last==false){
                 $("#nextpagebutton").show();
                 $("#nextpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)+1);
             }
-            if (currentPageNum>1){
+            if (data.first==false){
                 $("#lastpagebutton").show();
                 $("#lastpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)-1);
             }
@@ -127,9 +130,10 @@ $(document).ready(function () {
     });
 
     $("#loginbutton").click(function () {
-        $("#welcomesection").hide();
+        /*$("#welcomesection").hide();
         $("#loginsection").show();
-        $("#exit").show();
+        $("#exit").show();*/
+        window.location.href="/login";
     });
 
     $("#registerbutton").click(function () {
@@ -137,43 +141,29 @@ $(document).ready(function () {
         $("#registersection").show();
     });
 
-    $("#loginsubmit").click(function () {
-        var user = new Object();
-        user.emailAddress = $("#emaillogin").val();
-        user.password = $("#passwordlogin").val();
-        var data = JSON.stringify(user);
-        $.ajax({
-            url: "/userlogin",
-            type: "POST",
-            data: data,
-            dataType: "text",
-            contentType: "application/json"
-        }).done(function (data) {
-            alert(data);
-        }).fail(function (data) {
-            alert(data.responseText);
-        });
-    });
 
-    $("#registersubmit").click(function () {
-        if ($("#passwordregister").val()!= $("#passwordconfirm").val()){
-            alert("password not the same, please check");
-            return;
-        }
-        var user = new Object();
-        user.emailAddress = $("#emailregister").val();
-        user.password = $("#passwordregister").val();
-        var postdata = JSON.stringify(user);
+    function checkuser() {
         $.ajax({
-            url: "/userregister",
-            type: "POST",
-            data: postdata,
-            dataType: "text",
-            contentType: "application/json"
+            url:"/isloggedin",
+            method: "GET"
         }).done(function (data) {
-            alert(data);
+            $("#loginsection").hide();
+            $("#userinfosection").show();
+            $("#useremail").text(data);
         }).fail(function () {
-            alert("Server error;")
+            $("#loginsection").show();
+            $("#userinfosection").hide();
+        });
+
+    }
+
+    $("#logoutbutton").click(function () {
+        $.ajax({
+            method:"GET",
+            url: "/logout"
+        }).done(function () {
+            localStorage.removeItem("useremail");
+            window.location="/";
         });
     });
 });

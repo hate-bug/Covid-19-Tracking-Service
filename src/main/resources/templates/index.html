@@ -4,28 +4,45 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" language="JavaScript"src="javascript/homepage.js"></script>
     <link rel="stylesheet", href="css/general.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>COVID19-Tracking-System</title>
 </head>
 <body>
-        <a id="exit" style="display: none" href="/">Exit</a>
-        <h1>COVID19_Tracking_System</h1>
-        <br>
+<div class="container-fluid">
+    <header class="blog-header py-3">
+        <div class="row flex-nowrap justify-content-between align-items-center">
+            <div id="exit" style="display: none" class="col-4 pt-1 text-left">
+                <a class="text-muted" href="/">Back</a>
+            </div>
+            <div class="text-center">
+                <a class="blog-header-logo text-dark">Covid-19-Tracking-System</a>
+            </div>
+            <div id="loginsection" class="col-4 header-right justify-content-end align-items-center">
+                <a href="/login" class="btn btn-sm btn-outline-secondary" id="loginbutton">Log in</a>
+                <a href="/register" class="btn btn-sm btn-outline-secondary" id="registerbutton">Register</a>
+            </div>
+            <div id="userinfosection" style="display: none" class="header-right col-4 justify-content-end align-items-center">
+                <span id="useremail"></span>
+                <button class="btn btn-sm btn-outline-secondary" id="logoutbutton">Log out</button>
+            </div>
+        </div>
+    </header>
     <div id="welcomesection">
         <button id="createpatient">Create patient</button>
         <button id="showevents">Show events</button>
-        <button id="loginbutton">Log in</button>
     </div>
     <div id="patientinfo" style="display: none">
-        <table id="eventtable" style="width: 80%">
+        <table class="table table-striped" id="eventtable" style="width: 80%">
             <thead>
-                <tr>
-                    <th>Event name</th>
-                    <th>Date</th>
-                    <th>Address</th>
-                    <th>longitude</th>
-                    <th>latitude</th>
-                </tr>
+            <tr>
+                <th>Event name</th>
+                <th>Date</th>
+                <th>Address</th>
+                <th>longitude</th>
+                <th>latitude</th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -36,16 +53,16 @@
     </div>
 
     <div class="center" id="eventsection" style="display: none">
-        <table id="eventlist" style="width: 80%">
+        <table class="table table-striped" id="eventlist" style="width: 80%">
             <thead>
-                <tr>
-                    <th>Event name</th>
-                    <th>Date</th>
-                    <th>Address</th>
-                    <th>longitude</th>
-                    <th>latitude</th>
-                    <th>Attended Patients</th>
-                </tr>
+            <tr>
+                <th>Event name</th>
+                <th>Date</th>
+                <th>Address</th>
+                <th>longitude</th>
+                <th>latitude</th>
+                <th>Attended Patients</th>
+            </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -54,32 +71,6 @@
             <button id="nextpagebutton" class="center" style="display: none">Next page</button>
         </div>
     </div>
-
-    <div id="loginsection" style="display: none">
-        <span>Log in: </span>
-        <span>Email Address: </span>
-        <input id="emaillogin" type="text"/>
-        <br>
-        <span>Password: </span>
-        <input id="passwordlogin" type="text">
-        <br>
-        <button id="loginsubmit">Log in</button>
-        <button id="registerbutton">Register</button>
-    </div>
-
-    <div id="registersection" style="display: none">
-        <span>Create user account</span>
-        <br>
-        <span>Email Address: </span>
-        <input id="emailregister" type="text"/>
-        <br>
-        <span>Password: </span>
-        <input id="passwordregister" type="text"/>
-        <br>
-        <span>Confirm password</span>
-        <input id="passwordconfirm" type="text"/>
-        <br>
-        <button id="registersubmit">Register</button>
-    </div>
+</div>
 </body>
 </html>

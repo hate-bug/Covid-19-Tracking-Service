@@ -16,6 +16,7 @@ public class User {
     private String emailAddress;
     private String password;
     private boolean isEnabled; //False if user has not confirmed email address yet
+    private boolean isAdmin; //bu default create normal users (not admin)
 
     @Autowired
     public User(){
@@ -26,6 +27,7 @@ public class User {
         this.emailAddress = emailAddress;
         this.password = password;
         this.isEnabled = false;
+        this.isAdmin = false;
     }
 
     public String getEmailAddress (){
@@ -54,5 +56,13 @@ public class User {
 
     public void setEnable (boolean isEnabled){
         this.isEnabled = isEnabled;
+    }
+
+    public void setRole (boolean isAdmin){
+        this.isAdmin = isAdmin;
+    }
+
+    public boolean isAdmin (){
+        return this.isAdmin;
     }
 }
