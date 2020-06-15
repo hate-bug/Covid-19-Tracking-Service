@@ -3,15 +3,12 @@ package com.WebController;
 import com.Model.*;
 import com.Repository.*;
 import com.Service.*;
-import org.assertj.core.util.IterableUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -46,7 +43,7 @@ public class EventController {
      * User will get a list of all existing events with number of attended patients
      */
     @GetMapping(value = "/allEvents")
-    public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum, ServletResponse response){
+    public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum){
         Page<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 10));
         return events;
     }

@@ -40,6 +40,11 @@ public class LoginController {
         return "register";
     }
 
+    @RequestMapping(value = "/confirmaccount", method = RequestMethod.GET)
+    public String ConfirmEmail (@RequestParam("token") String confirmationToken){
+        return "confirmpage";
+    }
+
     @PostMapping(value = "/userregister", consumes = "application/json")
     public ResponseEntity<String> userRegistration(@RequestBody User user, HttpServletRequest request){
         if (this.userRepository.findUserByEmailAddressIgnoreCase(user.getEmailAddress())!=null){
@@ -48,11 +53,6 @@ public class LoginController {
         this.userService.save(user, request);
         ConfirmationToken token = new ConfirmationToken(user);
         return new ResponseEntity<>("Confirmation email sent to: "+user.getEmailAddress(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/confirmaccount", method = RequestMethod.GET)
-    public String ConfirmEmail (@RequestParam("token") String confirmationToken){
-        return "confirmpage";
     }
 
     @PostMapping (value = "/posttoken")
