@@ -9,37 +9,32 @@ import java.util.List;
 
 public class UserDetail implements UserDetails {
 
-    private String userName;
-    private String passWord;
-    private boolean isEnabled;
-    private boolean isAdmin;
+    private User user;
     private List<GrantedAuthority> authorities;
 
     public UserDetail(User user){
-        this.userName = user.getEmailAddress();
-        this.passWord = user.getPassword();
-        this.isEnabled = user.isEnabled();
-        this.isAdmin = user.isAdmin();
+        this.user = user;
         this.authorities = new ArrayList<>();
-        this.authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        if (isAdmin){
-             this.authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (user instanceof AdminUser){
+             this.authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        } else {
+            this.authorities.add(new SimpleGrantedAuthority("USER"));
         }
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.authorities;
     }
 
     @Override
     public String getPassword() {
-        return this.passWord;
+        return this.user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.userName;
+        return this.user.getEmailAddress();
     }
 
     @Override
@@ -59,6 +54,6 @@ public class UserDetail implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.isEnabled;
+        return this.user.isEnabled();
     }
 }

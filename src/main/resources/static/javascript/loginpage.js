@@ -9,10 +9,8 @@ $(document).ready(function () {
             url: "/userlogin",
             type: "POST",
             data: data,
-            dataType: "text",
             contentType: "application/json"
         }).ajaxSuccess(function () {
-            localStorage.setItem("useremail", user.emailAddress);
             window.location=("/");
         }).fail(function (data) {
             alert(data.responseText);

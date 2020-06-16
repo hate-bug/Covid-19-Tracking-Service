@@ -1,22 +1,19 @@
 package com.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Inheritance (strategy = InheritanceType.JOINED)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String emailAddress;
-    private String password;
+    private String password; //Encrypted password
     private boolean isEnabled; //False if user has not confirmed email address yet
-    private boolean isAdmin; //bu default create normal users (not admin)
+    private boolean isVerified;
 
     @Autowired
     public User(){
@@ -27,7 +24,7 @@ public class User {
         this.emailAddress = emailAddress;
         this.password = password;
         this.isEnabled = false;
-        this.isAdmin = false;
+        this.isVerified = false;
     }
 
     public String getEmailAddress (){
@@ -36,10 +33,6 @@ public class User {
 
     public String getPassword (){
         return this.password;
-    }
-
-    public void setEmailAddress (String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     public void setPassword (String password){
@@ -58,11 +51,7 @@ public class User {
         this.isEnabled = isEnabled;
     }
 
-    public void setRole (boolean isAdmin){
-        this.isAdmin = isAdmin;
-    }
+    public boolean isVerified (){return this.isVerified;}
 
-    public boolean isAdmin (){
-        return this.isAdmin;
-    }
+    public void setVerified (boolean isVerified) {this.isVerified=isVerified;}
 }

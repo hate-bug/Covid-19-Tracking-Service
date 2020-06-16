@@ -24,12 +24,12 @@ public class EventService {
             eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
             int index = eventList.indexOf(e);
             if (index<0) {//new Event, save it to Repo
-                association = new PatientEventAssociation(e, tempPatient, true);
+                association = new PatientEventAssociation(e, tempPatient, false);
                 e.addAssociation(association);
                 eventRepo.save(e);
             } else {//event already exist, just save association
                 Event event = eventList.get(index);
-                association = new PatientEventAssociation(event, tempPatient, true);
+                association = new PatientEventAssociation(event, tempPatient, false);
                 event.addAssociation(association);
                 eventRepo.save(event);
             }

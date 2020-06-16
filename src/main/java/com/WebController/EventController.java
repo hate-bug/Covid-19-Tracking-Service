@@ -2,13 +2,12 @@ package com.WebController;
 
 import com.Model.*;
 import com.Repository.*;
-import com.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,7 +17,7 @@ public class EventController {
     private EventRepository eventRepo;
 
     @Autowired
-    private EventService eventService;
+    private UserRepository userRepo;
 
     /**
      * Handler for patients creation.
@@ -27,15 +26,30 @@ public class EventController {
      * Event duplication should be avoided.
      */
     @PostMapping(value = "/patientinfo", consumes = "application/json")
-    public ResponseEntity<String> receivePatient (@RequestBody List<Event> events){
-        try {
-            this.eventService.saveEvents(events);
-            return new ResponseEntity<>("saved", HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Unable to save", HttpStatus.INTERNAL_SERVER_ERROR);
+    public List<Event> receivePatient (@RequestBody List<Event> events, Principal principal){
+        Patient tempPatient = new Patient();//created patient
+        List<Event> eventList, returnList;
+        returnList = new ArrayList<>();
+        PatientEventAssociation association;
+        boolean verified =false;
+        if (principal!=null){ // check if its a verified user
+            verified = this.userRepo.findUserByEmailAddressIgnoreCase(principal.getName()).isVerified();
         }
-
+        for (Event e: events){
+            eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
+            int index = eventList.indexOf(e);
+            if (index<0) {//new Event, save it to Repo
+                association = new PatientEventAssociation(e, tempPatient, verified);
+                e.addAssociation(association);
+                returnList.add(eventRepo.save(e));
+            } else {//event already exist, just save association
+                Event event = eventList.get(index);
+                association = new PatientEventAssociation(event, tempPatient, verified);
+                event.addAssociation(association);
+                returnList.add(eventRepo.save(event));
+            }
+        }
+        return returnList;
     }
 
     /**

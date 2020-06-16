@@ -10,18 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+
+import javax.transaction.Transactional;
 import java.util.Calendar;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(classes = Tracking_System_Application.class)
 @AutoConfigureMockMvc
+@Transactional
 public class EventControllerTest {
 
     @Autowired
@@ -47,10 +49,8 @@ public class EventControllerTest {
     public void testPostPatients () throws Exception{
         String jsonString = "[{\"name\":\"E1\",\"date\":\"2020-01-01\",\"place\":{\"address\":\"1123Ahiji\",\"longitude\":\"123131\",\"latitude\":\"123123\"}},{\"name\":\"E2\",\"date\":\"2222-02-02\",\"place\":{\"address\":\"313132LJ\",\"longitude\":\"13312\",\"latitude\":\"23213\"}}]";
         mockMvc.perform(post("/patientinfo").content(jsonString)
-                .contentType(APPLICATION_JSON)
-                .accept(TEXT_HTML))
-                .andExpect(status().isCreated())
-                .andExpect(content().string("saved"));
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     /**

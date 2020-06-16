@@ -1,16 +1,14 @@
 package com.Configuration;
 
+
 import com.Service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 @EnableWebSecurity
@@ -24,24 +22,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private MyUserDetailService userDetailsService;
+    private PasswordConfig passwordConfig;
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-    }
+    @Value("${spring.mail.username}")
+    private String emailAddress;
+
+    @Value("${spring.mail.password}")
+    private String password;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/","index","/css/*", "/javascript/*","/login", "/register", "/isloggedin", "/patientinfo", "/allEvents").permitAll()
-                    .antMatchers(HttpMethod.POST, "/userregister").permitAll()
-                    .antMatchers(HttpMethod.POST, "/userlogin").permitAll()
-                    .antMatchers("/confirmaccount").permitAll()
-                .and()
+        http.authorizeRequests()
+                    .antMatchers("/admin").access("hasRole('ROLE_ADMIN')")
+                    .and()
                     .formLogin().loginPage("/loginpage")
                     .loginProcessingUrl("/userlogin")
                     .usernameParameter("emailaddress").passwordParameter("password")
-                    .successHandler(new AppAuthenticationSuccessHandler())
                     .defaultSuccessUrl("/", true)
                 .and()
                     .logout().permitAll()
@@ -50,25 +47,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
                 .and()
+                    .httpBasic()
+                .and()
                     .csrf().disable();
 
     }
-
-    @Bean
-    public AuthenticationManager customAuthenticationManager() throws Exception {
-        return authenticationManager();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler appAuthenticationSuccessHandler(){
-        return new AppAuthenticationSuccessHandler();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-    }
-
-
 
 }

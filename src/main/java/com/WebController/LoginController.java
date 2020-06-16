@@ -40,6 +40,9 @@ public class LoginController {
         return "register";
     }
 
+    @GetMapping (value = "/admin")
+    public String adminPage (){return "adminpage";}
+
     @RequestMapping(value = "/confirmaccount", method = RequestMethod.GET)
     public String ConfirmEmail (@RequestParam("token") String confirmationToken){
         return "confirmpage";
