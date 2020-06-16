@@ -4,13 +4,11 @@ import com.Application.Tracking_System_Application;
 import com.Model.Event;
 import com.Model.Place;
 import com.Repository.EventRepository;
-import com.Repository.PatientRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-
 import javax.transaction.Transactional;
 import java.util.Calendar;
 import static org.hamcrest.Matchers.*;

@@ -2,26 +2,21 @@ package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
 import com.Configuration.PasswordConfig;
-import com.Model.AdminUser;
 import com.Model.ConfirmationToken;
 import com.Model.User;
 import com.Repository.AdminUserRepository;
 import com.Repository.ConfirmationTokenRepository;
 import com.Repository.UserRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import javax.transaction.Transactional;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -92,11 +87,6 @@ public class OAuthMVCTest {
         RequestBuilder requestBuilder2 = formLogin().user("emailaddress","covidtracking08@gmail.com").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder2)
                 .andExpect(authenticated().withUsername("covidtracking08@gmail.com"));
-    }
-
-    @After
-    public void cleanup(){
-
     }
 
 }
