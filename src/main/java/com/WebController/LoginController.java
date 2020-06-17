@@ -78,6 +78,7 @@ public class LoginController {
 
     }
 
+
     @PostMapping (value = "/userlogin", consumes = "application/json")
     public ResponseEntity<String> login (@RequestBody User longinUser){
         User user = this.userRepository.findUserByEmailAddressIgnoreCase(longinUser.getEmailAddress());

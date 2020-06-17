@@ -6,10 +6,8 @@ import com.Model.PatientEventAssociation;
 import com.Model.Place;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.Calendar;
 import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PatientTest {
