@@ -1,5 +1,7 @@
 $(document).ready(function () {
 
+    checkuser();
+
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
@@ -68,12 +70,14 @@ $(document).ready(function () {
         $("#exit").hide();
     });
 
-    $("#showevents").click(function () {
+    function showEvents(currentPageNum){
+        $("#eventlist tbody").empty();
         $.ajax({
-           url: "/allEvents",
-           type: "GET"
-        }).done(function (data) {
-            $.each(data, function (index, value) {
+            url: "/allEvents?page="+currentPageNum,
+            type: "GET"
+        }).done(function (data, textStatus, request) {
+            var content = data.content;
+            $.each(content, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
                 if (eventdate!=null && eventdate.indexOf("T")!=-1){
@@ -91,13 +95,75 @@ $(document).ready(function () {
                     "<td>"+ longitude +"</td>" +
                     "<td>"+ latitude +"</td>" +
                     "<td>"+ num +"</td>" +
-                    "</tr>"
-                $("#eventlist").append(row);
-                $("#welcomesection").hide();
-                $("#eventsection").show();
-                $("#exit").show();
+                    "</tr>";
+                $("#eventlist tbody").append(row);
             });
+            $("#nextpagebutton").hide();
+            $("#lastpagebutton").hide();
+
+            if (data.last==false){
+                $("#nextpagebutton").show();
+                $("#nextpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)+1);
+            }
+            if (data.first==false){
+                $("#lastpagebutton").show();
+                $("#lastpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)-1);
+            }
+            $("#welcomesection").hide();
+            $("#eventsection").show();
+            $("#exit").show();
         });
+    }
+
+    $("#nextpagebutton").click(function () {
+        var pagenum = $("#nextpagebutton").attr("pagenumber");
+        showEvents(pagenum);
     });
 
+    $("#lastpagebutton").click(function () {
+        var pagenum = $("#lastpagebutton").attr("pagenumber");
+        showEvents(pagenum);
+    });
+
+    $("#showevents").click(function () {
+       showEvents(1);
+    });
+
+    $("#loginbutton").click(function () {
+        /*$("#welcomesection").hide();
+        $("#loginsection").show();
+        $("#exit").show();*/
+        window.location.href="/login";
+    });
+
+    $("#registerbutton").click(function () {
+        $("#loginsection").hide();
+        $("#registersection").show();
+    });
+
+
+    function checkuser() {
+        $.ajax({
+            url:"/isloggedin",
+            method: "GET"
+        }).done(function (data) {
+            $("#loginsection").hide();
+            $("#userinfosection").show();
+            $("#useremail").text(data);
+        }).fail(function () {
+            $("#loginsection").show();
+            $("#userinfosection").hide();
+        });
+
+    }
+
+    $("#logoutbutton").click(function () {
+        $.ajax({
+            method:"GET",
+            url: "/logout"
+        }).done(function () {
+            localStorage.removeItem("useremail");
+            window.location="/";
+        });
+    });
 });

@@ -1,66 +1,65 @@
 package com.WebController;
 
-import com.Model.Patient;
-import com.Model.PatientEventAssociation;
-import com.Repository.AssociationRepository;
-import com.Repository.EventRepository;
-import com.Repository.PatientRepository;
-import com.Model.Event;
+import com.Model.*;
+import com.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 public class EventController {
-
-    @Autowired
-    private PatientRepository patientRepo;
 
     @Autowired
     private EventRepository eventRepo;
 
     @Autowired
-    private AssociationRepository assoicationRepo;
+    private UserRepository userRepo;
 
-    @GetMapping("/")
-    public String homePage() {
-        return "index";
-    }
-
+    /**
+     * Handler for patients creation.
+     * User create a patient in front end and associate patient with multiple events.
+     * Data posted with JSON string and parsed to Event objects directly.
+     * Event duplication should be avoided.
+     */
     @PostMapping(value = "/patientinfo", consumes = "application/json")
-    @ResponseBody
-    public String receivePatient (@RequestBody List<Event> events){
-        Patient tempPatient = new Patient();
-        List<Event> eventList = new ArrayList<>();
-        Iterable<Event> allEvents = this.eventRepo.findAll();
-        allEvents.forEach(eventList::add);
+    public List<Event> receivePatient (@RequestBody List<Event> events, Principal principal){
+        Patient tempPatient = new Patient();//created patient
+        List<Event> eventList, returnList;
+        returnList = new ArrayList<>();
         PatientEventAssociation association;
+        boolean verified =false;
+        if (principal!=null){ // check if its a verified user
+            verified = this.userRepo.findUserByEmailAddressIgnoreCase(principal.getName()).isVerified();
+        }
         for (Event e: events){
+            eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
             int index = eventList.indexOf(e);
             if (index<0) {//new Event, save it to Repo
-                association = new PatientEventAssociation(e, tempPatient, true);
+                association = new PatientEventAssociation(e, tempPatient, verified);
                 e.addAssociation(association);
-                eventRepo.save(e);
+                returnList.add(eventRepo.save(e));
             } else {//event already exist, just save association
                 Event event = eventList.get(index);
-                association = new PatientEventAssociation(event, tempPatient, true);
+                association = new PatientEventAssociation(event, tempPatient, verified);
                 event.addAssociation(association);
-                eventRepo.save(event);
+                returnList.add(eventRepo.save(event));
             }
         }
-        return "success";
+        return returnList;
     }
 
-    @GetMapping(value = "/allEvents", produces = "application/json")
-    @ResponseBody
-    public List<Event> getAllEvents (){
-        List<Event> list = new ArrayList<>();
-        Iterable<Event> events = this.eventRepo.findAll();
-        events.forEach(list::add);
-        return list;
+    /**
+     * DoGet handler for all events.
+     * User will get a list of all existing events with number of attended patients
+     */
+    @GetMapping(value = "/allEvents")
+    public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum){
+        Page<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 10));
+        return events;
     }
 
 }
