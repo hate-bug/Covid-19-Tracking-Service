@@ -55,7 +55,7 @@ $(document).ready(function () {
             dataType: "text",
             contentType: "application/json"
         }).done(function (data) {
-            alert(data);
+            alert("Data posted");
             $("#exit").hide();
             $("#welcomesection").show();
             $("#patientinfo").hide();
@@ -165,5 +165,9 @@ $(document).ready(function () {
             localStorage.removeItem("useremail");
             window.location="/";
         });
+    });
+
+    $("#profilepagebutton").click(function () {
+        window.location = "/profilepage";
     });
 });

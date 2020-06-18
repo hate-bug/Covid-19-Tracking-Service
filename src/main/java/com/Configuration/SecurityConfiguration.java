@@ -1,7 +1,6 @@
 package com.Configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                    .antMatchers("/admin").access("hasRole('ROLE_ADMIN')")
+                    .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                     .and()
                     .formLogin().loginPage("/loginpage")
                     .loginProcessingUrl("/userlogin")

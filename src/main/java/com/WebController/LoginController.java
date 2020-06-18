@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @Controller
 public class LoginController {
@@ -100,4 +101,13 @@ public class LoginController {
             return new ResponseEntity<>("Not logged in", HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping (value = "/profilepage")
+    public String profilePage (Principal principal){
+        if (principal==null){
+            return "loginpage";
+        }
+        return "profilepage";
+    }
+
 }

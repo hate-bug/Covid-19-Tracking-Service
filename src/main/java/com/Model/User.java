@@ -1,7 +1,10 @@
 package com.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Inheritance (strategy = InheritanceType.JOINED)
@@ -14,6 +17,9 @@ public class User {
     private String password; //Encrypted password
     private boolean isEnabled; //False if user has not confirmed email address yet
     private boolean isVerified;
+    @OneToOne
+    @Nullable
+    private UserFile userFile;
 
     @Autowired
     public User(){
@@ -54,4 +60,12 @@ public class User {
     public boolean isVerified (){return this.isVerified;}
 
     public void setVerified (boolean isVerified) {this.isVerified=isVerified;}
+
+    public void addUserFile (UserFile userFile){
+        this.userFile = userFile;
+    }
+
+    public Optional<UserFile> getUserFile (){
+        return Optional.ofNullable(this.userFile);
+    }
 }
