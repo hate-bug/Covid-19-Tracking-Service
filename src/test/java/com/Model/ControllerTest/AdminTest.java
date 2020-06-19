@@ -48,7 +48,7 @@ public class AdminTest {
 
     @Test
     public void AdminLoginTest () throws Exception {
-        AdminUser adminUser = new AdminUser("test@test.test", this.passwordConfig.passwordEncoder().encode("testpassword"));
+        AdminUser adminUser = new AdminUser("test@test.test", "testpassword");
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
