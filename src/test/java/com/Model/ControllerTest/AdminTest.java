@@ -48,25 +48,25 @@ public class AdminTest {
 
     @Test
     public void AdminLoginTest () throws Exception {
-        AdminUser adminUser = new AdminUser("covidtracking08@gmail.com", this.passwordConfig.passwordEncoder().encode("testpassword"));
+        AdminUser adminUser = new AdminUser("test@test.test", this.passwordConfig.passwordEncoder().encode("testpassword"));
         this.userRepository.save(adminUser);
-        RequestBuilder requestBuilder = formLogin().user("emailaddress","covidtracking08@gmail.com").password("password","testpassword").loginProcessingUrl("/userlogin");
+        RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
-                .andExpect(authenticated().withUsername("covidtracking08@gmail.com"));
+                .andExpect(authenticated().withUsername("test@test.test"));
 
     }
 
     @Test
-    @WithMockUser(username="admin",roles={"USER","ADMIN"})
+    @WithMockUser(username="admin",roles={"ADMIN"})
     public void adminPageTest () throws Exception {
-        this.mockMvc.perform(get("/admin"))
+        this.mockMvc.perform(get("/admin.html"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username="User",roles={"USER"})
+    @WithMockUser(username="user",roles={"USER"})
     public void adminPageTestWithoutAdmin () throws Exception {
-        this.mockMvc.perform(get("/admin"))
+        this.mockMvc.perform(get("/admin.html"))
                 .andExpect(status().isForbidden());
     }
 }

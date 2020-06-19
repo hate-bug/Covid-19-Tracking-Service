@@ -36,8 +36,7 @@ public class EventControllerTest {
     @Test
     public void contextLoad () throws Exception{
         this.mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("COVID")));
+                .andExpect(status().isOk());
     }
 
     /**

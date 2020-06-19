@@ -129,13 +129,6 @@ $(document).ready(function () {
        showEvents(1);
     });
 
-    $("#loginbutton").click(function () {
-        /*$("#welcomesection").hide();
-        $("#loginsection").show();
-        $("#exit").show();*/
-        window.location.href="/login";
-    });
-
     $("#registerbutton").click(function () {
         $("#loginsection").hide();
         $("#registersection").show();
@@ -167,7 +160,4 @@ $(document).ready(function () {
         });
     });
 
-    $("#profilepagebutton").click(function () {
-        window.location = "/profilepage";
-    });
 });
