@@ -55,7 +55,7 @@ $(document).ready(function () {
             dataType: "text",
             contentType: "application/json"
         }).done(function (data) {
-            alert(data);
+            alert("Data posted");
             $("#exit").hide();
             $("#welcomesection").show();
             $("#patientinfo").hide();
@@ -129,13 +129,6 @@ $(document).ready(function () {
        showEvents(1);
     });
 
-    $("#loginbutton").click(function () {
-        /*$("#welcomesection").hide();
-        $("#loginsection").show();
-        $("#exit").show();*/
-        window.location.href="/login";
-    });
-
     $("#registerbutton").click(function () {
         $("#loginsection").hide();
         $("#registersection").show();
@@ -166,4 +159,5 @@ $(document).ready(function () {
             window.location="/";
         });
     });
+
 });

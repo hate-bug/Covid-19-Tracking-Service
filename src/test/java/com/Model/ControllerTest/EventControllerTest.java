@@ -36,8 +36,7 @@ public class EventControllerTest {
     @Test
     public void contextLoad () throws Exception{
         this.mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("COVID")));
+                .andExpect(status().isOk());
     }
 
     /**
@@ -49,6 +48,10 @@ public class EventControllerTest {
         mockMvc.perform(post("/patientinfo").content(jsonString)
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
+        String jsonString1 = "[{\"name\":\"E1\",\"date\":\"2020-01-01\",\"place\":{\"address\":\"1123Ahiji\",\"longitude\":\"123131a\",\"latitude\":\"123123\"}},{\"name\":\"E2\",\"date\":\"2222-02-02\",\"place\":{\"address\":\"313132LJ\",\"longitude\":\"13312.123\",\"latitude\":\"23213\"}}]";
+        mockMvc.perform(post("/patientinfo").content(jsonString1)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     /**
@@ -73,6 +76,23 @@ public class EventControllerTest {
                 .andExpect(jsonPath("$.content[1].name", is(e2.getName())))
                 .andExpect(jsonPath("$.content[1].place.address", is(p2.getAddress())))
                 .andExpect(jsonPath("$.content[1].place.latitude", is(p2.getLatitude())));
+    }
+
+    @Test
+    public void testPostAndGetEvent () throws Exception {
+        String jsonString ="[]";
+        mockMvc.perform(post("/patientinfo").content(jsonString)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/allEvents?page=1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(0)));
+
+        String jsonString1 = "[{\"name\":\"E1\",\"date\":\"2020-01-01\",\"place\":{\"address\":\"1123Ahiji\",\"longitude\":\"123131a\",\"latitude\":\"123123\"}},{\"name\":\"E2\",\"date\":\"2222-02-02\",\"place\":{\"address\":\"313132LJ\",\"longitude\":\"\",\"latitude\":\"\"}}]";
+        mockMvc.perform(post("/patientinfo").content(jsonString1)
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
 public interface PatientRepository extends CrudRepository<Patient, Integer> {
 
 }

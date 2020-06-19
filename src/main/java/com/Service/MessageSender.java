@@ -3,13 +3,14 @@ package com.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MessageSender {
 
     @Autowired
-    private EmailSenderService emailSenderService;
+    private JavaMailSender javaMailSender;
 
     @Autowired
     private MessageSender (){}
@@ -25,6 +26,6 @@ public class MessageSender {
         message.setFrom(this.senderEmailAddress);
         message.setText("To confirm your email address, please click here:"
                 + serverAddress +"/confirmaccount?token="+token);
-        emailSenderService.sendEmail(message);
+        javaMailSender.send (message);
     }
 }
