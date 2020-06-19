@@ -1,16 +1,15 @@
 package com.Model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 public class AdminUser extends User {
 
-    @Id
-    private long id;
-
-    @Autowired
     public AdminUser (){
         super();
     }
@@ -19,9 +18,12 @@ public class AdminUser extends User {
         super(emailAddress,password);
     }
 
-    @Override //Admin user should not need register, admin account should be assigned directly.
-    public boolean isEnabled (){//admin account should always be enabled
-        return true;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority("USER"));
+        roles.add(new SimpleGrantedAuthority("ADMIN"));
+        return roles ;
     }
 
 }

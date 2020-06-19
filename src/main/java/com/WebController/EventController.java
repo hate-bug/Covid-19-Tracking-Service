@@ -33,9 +33,12 @@ public class EventController {
         PatientEventAssociation association;
         boolean verified =false;
         if (principal!=null){ // check if its a verified user
-            verified = this.userRepo.findUserByEmailAddressIgnoreCase(principal.getName()).isVerified();
+            verified = true;
         }
         for (Event e: events){
+            if (e.getDate()==null || e.getName().equals("") || e.getPlace().getAddress().equals("") || e.getPlace().getLongitude()==0.0 || e.getPlace().getLatitude()==0.0){
+                continue;
+            }
             eventList = this.eventRepo.findAllByNameAndDate(e.getName(), e.getDate());
             int index = eventList.indexOf(e);
             if (index<0) {//new Event, save it to Repo

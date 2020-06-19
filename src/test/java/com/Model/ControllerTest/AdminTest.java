@@ -3,8 +3,6 @@ package com.Model.ControllerTest;
 import com.Application.Tracking_System_Application;
 import com.Configuration.PasswordConfig;
 import com.Model.AdminUser;
-import com.Repository.AdminUserRepository;
-import com.Repository.ConfirmationTokenRepository;
 import com.Repository.UserRepository;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -16,9 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import javax.transaction.Transactional;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -40,8 +36,7 @@ public class AdminTest {
     private WebApplicationContext context;
 
     @Autowired
-    private AdminUserRepository adminUserRepository;
-
+    private UserRepository userRepository;
 
     @Before
     public void pre (){
@@ -54,7 +49,7 @@ public class AdminTest {
     @Test
     public void AdminLoginTest () throws Exception {
         AdminUser adminUser = new AdminUser("covidtracking08@gmail.com", this.passwordConfig.passwordEncoder().encode("testpassword"));
-        this.adminUserRepository.save(adminUser);
+        this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","covidtracking08@gmail.com").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
                 .andExpect(authenticated().withUsername("covidtracking08@gmail.com"));
