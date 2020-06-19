@@ -1,6 +1,6 @@
 package com.Configuration;
 
-import com.Service.MyUserDetailService;
+import com.Service.TrackingSystemUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,14 +12,14 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 public class TrackingSystemWebSecurityConfigurerService extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private MyUserDetailService myUserDetailService;
+    private TrackingSystemUserDetailsService trackingSystemUserDetailsService;
 
     @Autowired
     private PasswordConfig passwordConfig;
 
     @Autowired
     public void configureGlobal( AuthenticationManagerBuilder auth ) throws Exception {
-        auth.userDetailsService(myUserDetailService)
+        auth.userDetailsService(trackingSystemUserDetailsService)
                 .passwordEncoder(this.passwordConfig.passwordEncoder());
     }
 

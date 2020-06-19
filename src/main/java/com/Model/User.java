@@ -3,6 +3,8 @@ package com.Model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +16,6 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
     private String emailAddress;
     private String password; //Encrypted password
 
@@ -24,7 +25,7 @@ public class User implements UserDetails {
 
     public User (String emailAddress, String password){
         this.emailAddress = emailAddress;
-        this.password = password;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public String getEmailAddress (){
@@ -68,7 +69,8 @@ public class User implements UserDetails {
     }
 
     public void setPassword (String password){
-        this.password = password;
+
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public long getId (){

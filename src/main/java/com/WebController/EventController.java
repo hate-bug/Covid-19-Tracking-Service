@@ -25,7 +25,7 @@ public class EventController {
      * Data posted with JSON string and parsed to Event objects directly.
      * Event duplication should be avoided.
      */
-    @PostMapping(value = "/patientinfo", consumes = "application/json")
+    @PostMapping(value = "/patientinfo")
     public List<Event> receivePatient (@RequestBody List<Event> events, Principal principal){
         Patient tempPatient = new Patient();//created patient
         List<Event> eventList, returnList;
