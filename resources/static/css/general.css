@@ -37,3 +37,24 @@ table th td{
     float: right;
     display: flex;
 }
+
+.margin-left{
+    margin-left: 3px;
+}
+
+.myform {
+    vertical-align: middle;
+    align-items: center;
+    width: 40%;
+    margin: auto;
+}
+
+.mytable {
+    margin: auto;
+    width: 90%;
+}
+
+.headercenter {
+    position: fixed;
+    left: 50%;
+}

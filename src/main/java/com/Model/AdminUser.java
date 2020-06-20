@@ -21,8 +21,8 @@ public class AdminUser extends User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority("USER"));
-        roles.add(new SimpleGrantedAuthority("ADMIN"));
+        roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        roles.add(new SimpleGrantedAuthority("ROLE_USER"));
         return roles ;
     }
 

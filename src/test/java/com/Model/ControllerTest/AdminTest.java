@@ -52,7 +52,7 @@ public class AdminTest {
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
-                .andExpect(authenticated().withUsername("test@test.test"));
+                .andExpect(authenticated().withUsername("test@test.test").withRoles("ADMIN", "USER"));
 
     }
 

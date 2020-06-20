@@ -147,7 +147,13 @@ $(document).ready(function () {
             $("#loginsection").show();
             $("#userinfosection").hide();
         });
-
+        $.ajax({
+            url:"/admin.html",
+            method: "GET",
+            success: function () {
+                $("#adminpage").show();
+            }
+        });
     }
 
     $("#logoutbutton").click(function () {
@@ -155,9 +161,44 @@ $(document).ready(function () {
             method:"GET",
             url: "/logout"
         }).done(function () {
-            localStorage.removeItem("useremail");
             window.location="/";
         });
+    });
+
+    $("#loginbutton").click(function () {
+        window.location = "/login.html";
+    });
+
+    $("#showform").click(function () {
+        $("#welcomesection").hide();
+        $("#formsection").show();
+        $("#exit").show();
+    });
+
+    $("#adminpage").click(function () {
+        window.location="/admin.html"
+    });
+
+    $("#applicationform").submit(function (e) {
+        e.preventDefault();
+        var applicant = new Object();
+        applicant.applicantEmail = $("#formemail").val();
+        applicant.description = $("#formdescription").val();
+        $.ajax({
+            url: "/postapplication",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(applicant)
+        }).done(function () {
+            alert("Form posted.")
+            window.location="/";
+        }).fail(function () {
+            alert("Server error, please submit again");
+        });
+    });
+
+    $("#changepasswordbutton").click(function () {
+        window.location = "/changepassword.html";
     });
 
 });

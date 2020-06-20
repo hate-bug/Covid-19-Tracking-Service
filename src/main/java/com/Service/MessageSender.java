@@ -1,10 +1,15 @@
 package com.Service;
 
+import com.Model.Applicant;
+import com.Model.User;
+import com.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class MessageSender {
@@ -18,14 +23,20 @@ public class MessageSender {
     @Value("${spring.mail.username}")
     private String senderEmailAddress;
 
+    @Autowired
+    private UserRepository userRepository;
 
-    public void sendRegisterEmail(String emailAddress, String token, String serverAddress){
+    public User sendRegisterEmail(Applicant applicant){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(emailAddress);
-        message.setSubject("COVID-19 Tracking System Registration.");
+        message.setTo(applicant.getApplicantEmail());
+        message.setSubject("COVID-19 tracking system account.");
         message.setFrom(this.senderEmailAddress);
-        message.setText("To confirm your email address, please click here:"
-                + serverAddress +"/confirmaccount?token="+token);
+        String password = UUID.randomUUID().toString();
+        User user = new User(applicant.getApplicantEmail(), password);
+        this.userRepository.save(user);
+        message.setText("Your account password is:"
+                + password + "\n You can change your password after logged in.");
         javaMailSender.send (message);
+        return user;
     }
 }
