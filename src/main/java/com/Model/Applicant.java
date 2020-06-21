@@ -17,8 +17,7 @@ public class Applicant {
     private String description;
 
     public Applicant(){
-        this.applicantEmail = "unknown";
-        this.description = "unknown";
+        this("unknown", "unknown");
     }
 
     public Applicant(String applicantEmail, String description){

@@ -34,7 +34,7 @@ public class MessageSender {
         User user = new User(applicant.getApplicantEmail(), password);
         this.userRepository.save(user);
         message.setText("Your account password is:"
-                + password + "\n You can change your password after logged in.");
+                + password + "\n You can change your password after logging in.");
         javaMailSender.send (message);
         return user;
     }

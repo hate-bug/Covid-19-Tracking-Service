@@ -59,14 +59,14 @@ public class AdminTest {
     @Test
     @WithMockUser(username="admin",roles={"ADMIN"})
     public void adminPageTest () throws Exception {
-        this.mockMvc.perform(get("/admin.html"))
+        this.mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username="user",roles={"USER"})
     public void adminPageTestWithoutAdmin () throws Exception {
-        this.mockMvc.perform(get("/admin.html"))
+        this.mockMvc.perform(get("/admin"))
                 .andExpect(status().isForbidden());
     }
 }

@@ -20,12 +20,8 @@ public class ApplicationController {
     private MessageSender messageSender;
 
     @PostMapping (value = "/postapplication")
-    public Applicant postApplication (@RequestBody Applicant applicant) throws FileAlreadyExistsException {
-        //check if any applicantion already existed
-        if (this.applicantRepository.findAllByApplicantEmailAndDescription(applicant.getApplicantEmail(), applicant.getDescription()).size()==0){
-            return this.applicantRepository.save(applicant);
-        }
-        throw new FileAlreadyExistsException("File exists");
+    public Applicant postApplication (@RequestBody Applicant applicant) {
+        return this.applicantRepository.save(applicant);
     }
 
     @GetMapping (value = "/admin/getapplicants")

@@ -148,7 +148,7 @@ $(document).ready(function () {
             $("#userinfosection").hide();
         });
         $.ajax({
-            url:"/admin.html",
+            url:"/admin",
             method: "GET",
             success: function () {
                 $("#adminpage").show();
@@ -166,7 +166,7 @@ $(document).ready(function () {
     });
 
     $("#loginbutton").click(function () {
-        window.location = "/login.html";
+        window.location = "/login";
     });
 
     $("#showform").click(function () {
@@ -176,7 +176,7 @@ $(document).ready(function () {
     });
 
     $("#adminpage").click(function () {
-        window.location="/admin.html"
+        window.location="/admin"
     });
 
     $("#applicationform").submit(function (e) {
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
 
     $("#changepasswordbutton").click(function () {
-        window.location = "/changepassword.html";
+        window.location = "/changepassword";
     });
 
 });

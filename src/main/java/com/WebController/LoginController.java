@@ -2,7 +2,7 @@ package com.WebController;
 
 import com.Model.User;
 import com.Repository.UserRepository;
-import com.Payload.ConfirmPasswordEntity;
+import com.Payload.ConfirmPasswordPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +27,15 @@ public class LoginController {
     }
 
     @PostMapping (value = "/changepassword")
-    public boolean changePassword (@RequestBody ConfirmPasswordEntity confirmPasswordEntity, Principal principal){
+    public boolean changePassword (@RequestBody ConfirmPasswordPayload confirmPasswordPayload, Principal principal){
         User user = this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName());
-        if (!confirmPasswordEntity.getConfirmnewPassword().equals(confirmPasswordEntity.getNewPassword())){
+        if (!confirmPasswordPayload.getConfirmnewPassword().equals(confirmPasswordPayload.getNewPassword())){
             return false;
         }
-        if (!new BCryptPasswordEncoder().matches(confirmPasswordEntity.getOldPassword(), user.getPassword())){ //check old password
+        if (!new BCryptPasswordEncoder().matches(confirmPasswordPayload.getOldPassword(), user.getPassword())){ //check old password
             return false;
         }
-        user.setPassword(confirmPasswordEntity.getNewPassword());
+        user.setPassword(confirmPasswordPayload.getNewPassword());
         this.userRepository.save(user);
         return true;
     }

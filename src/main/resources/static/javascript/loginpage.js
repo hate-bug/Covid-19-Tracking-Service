@@ -40,7 +40,7 @@ $(document).ready(function () {
                     url: "/logout",
                     method: "GET"
                 }).done(function () {
-                    window.location = "/login.html"
+                    window.location = "/login"
                 });
             } else {
                 alert("Server error.");
