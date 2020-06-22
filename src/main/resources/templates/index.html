@@ -3,7 +3,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" language="JavaScript" src="javascript/homepage.js"></script>
-    <link rel="stylesheet", href="css/general.css">
+    <link rel="stylesheet" media="all" type="text/css" href="css/general.css" th:href="@{css/general.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
@@ -20,14 +20,18 @@
                 <a class="blog-header-logo text-dark">Covid-19-Tracking-System</a>
             </div>
             <div id="loginsection" class="col-4 header-right justify-content-end align-items-center">
-                <a href="/login.html" class="btn btn-sm btn-outline-secondary" id="loginbutton">Log in</a>
+                <button class="btn btn-sm btn-outline-secondary" id="showform">Register</button>
+                <button class="btn btn-sm btn-outline-secondary margin-left" id="loginbutton">Log in</button>
             </div>
             <div id="userinfosection" style="display: none" class="header-right col-4 justify-content-end align-items-center">
                 <span id="useremail"></span>
-                <button class="btn btn-sm btn-outline-secondary" id="logoutbutton">Log out</button>
+                <button class="btn btn-sm btn-outline-secondary" id="adminpage" style="display: none">Admin Page</button>
+                <button class="btn btn-sm btn-outline-secondary margin-left" id="changepasswordbutton" >Change password</button>
+                <button class="btn btn-sm btn-outline-secondary margin-left" id="logoutbutton">Log out</button>
             </div>
         </div>
     </header>
+    <br>
     <div id="welcomesection">
         <button id="createpatient">Create patient</button>
         <button id="showevents">Show events</button>
@@ -69,6 +73,21 @@
             <button id="lastpagebutton" class="center" style="display: none">Last page</button>
             <button id="nextpagebutton" class="center" style="display: none">Next page</button>
         </div>
+    </div>
+
+    <div id="formsection" style="display: none">
+        <form id="applicationform" class="needs-validation myform">
+            <div>
+                <label for="formemail">Email <span class="text-muted">(Required)</span></label>
+                <input type="email" class="form-control" id="formemail" placeholder="you@example.com" required>
+            </div>
+            <br>
+            <div>
+                <label for="formdescription">Description <span class="text-muted">(Required)</span></label>
+                <textarea type="text" class="form-control" maxlength="250" id="formdescription" placeholder="Describe your information here and we will contact you by email." required></textarea>
+            </div>
+            <button class="btn btn-lg btn-primary" style="margin-top: 10px" type="submit">Submit</button>
+        </form>
     </div>
 </div>
 </body>

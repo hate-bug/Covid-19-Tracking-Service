@@ -1,11 +1,15 @@
 package com.WebController;
 
+import com.Model.User;
 import com.Repository.UserRepository;
+import com.Payload.ConfirmPasswordPayload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
 
 @RestController
 public class LoginController {
@@ -20,6 +24,20 @@ public class LoginController {
         } else {
             return new ResponseEntity<>("Not logged in", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping (value = "/changepassword")
+    public boolean changePassword (@RequestBody ConfirmPasswordPayload confirmPasswordPayload, Principal principal){
+        User user = this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName());
+        if (!confirmPasswordPayload.getConfirmnewPassword().equals(confirmPasswordPayload.getNewPassword())){
+            return false;
+        }
+        if (!new BCryptPasswordEncoder().matches(confirmPasswordPayload.getOldPassword(), user.getPassword())){ //check old password
+            return false;
+        }
+        user.setPassword(confirmPasswordPayload.getNewPassword());
+        this.userRepository.save(user);
+        return true;
     }
 
 }

@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import java.util.Calendar;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,7 +35,8 @@ public class EventControllerTest {
     @Test
     public void contextLoad () throws Exception{
         this.mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("COVID")));
     }
 
     /**

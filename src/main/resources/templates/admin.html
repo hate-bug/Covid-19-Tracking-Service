@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="javascript/adminpage.js"></script>
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+</head>
+<body>
+    <header>
+        <div id="exit" class="col-4 pt-1 text-left">
+            <a class="text-muted" href="/">Back</a>
+        </div>
+    </header>
+    <h3>Admin Page</h3>
+    <div class="center" id="applicantlistsection">
+        <table class="table mytable table-striped" id="applicantlist" style="width: 80%">
+            <thead>
+            <tr>
+                <th>Applicant Email</th>
+                <th style="max-width: 60%">Applicant Description</th>
+                <th>Decision</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="center">
+            <button id="lastpagebutton" class="center" style="display: none">Last page</button>
+            <button id="nextpagebutton" class="center" style="display: none">Next page</button>
+        </div>
+    </div>
+</body>
+</html>

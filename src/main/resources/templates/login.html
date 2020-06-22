@@ -3,17 +3,22 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" language="JavaScript"src="javascript/loginpage.js"></script>
-    <link rel="stylesheet", href="css/general.css">
+    <link rel="stylesheet" href="css/general.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <title>Login page</title>
 </head>
 <body class="text-center">
+    <header>
+        <div id="exit" class="col-4 pt-1 text-left">
+            <a class="text-muted" href="/">Back</a>
+        </div>
+    </header>
     <div class="container">
         <h1 class="h3 mb-4 font-weight-normal">Covid-19 Tracking System</h1>
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <form method="post" action="/userlogin"  id="loginform_" class="form-signin">
+        <form method="post" action="/userlogin"  id="loginform" class="form-signin">
             <label class="sr-only">Email address</label>
             <input type="email" name="emailaddress" id="emailAddress" class="form-control" placeholder="Email address" required autofocus>
             <label class="sr-only">Password</label>
@@ -22,6 +27,5 @@
             <button class="btn btn-primary btn-block" type="submit">Sign in</button>
         </form>
     </div>
-
 </body>
 </html>
