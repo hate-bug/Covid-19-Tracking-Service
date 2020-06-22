@@ -6,8 +6,9 @@ import com.Service.MessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+
+import javax.management.InstanceAlreadyExistsException;
 import java.io.FileNotFoundException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Optional;
 
 @RestController
@@ -20,7 +21,10 @@ public class ApplicationController {
     private MessageSender messageSender;
 
     @PostMapping (value = "/postapplication")
-    public Applicant postApplication (@RequestBody Applicant applicant) {
+    public Applicant postApplication (@RequestBody Applicant applicant) throws InstanceAlreadyExistsException {
+        if (this.applicantRepository.existsByApplicantEmail(applicant.getApplicantEmail())){
+            throw new InstanceAlreadyExistsException("Email already exists.");
+        }
         return this.applicantRepository.save(applicant);
     }
 
@@ -30,12 +34,12 @@ public class ApplicationController {
     }
 
     @PostMapping (value = "/admin/approveapplicant")
-    public Applicant approveApplicant (@RequestBody long applicantId) throws FileNotFoundException {
+    public void approveApplicant (@RequestBody long applicantId) throws FileNotFoundException {
         Optional<Applicant> applicant = this.applicantRepository.findById(applicantId);
         if (applicant.isPresent()){
             //send email to the applicant.
             this.messageSender.sendRegisterEmail(applicant.get());
-            return applicant.get();
+            this.applicantRepository.deleteById(applicant.get().getId());
         } else {
             throw new FileNotFoundException("No such applicant.");
         }

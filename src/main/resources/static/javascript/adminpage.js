@@ -47,6 +47,7 @@ $(document).ready(function () {
     $("#applicantlist tbody ").on('click', 'button.approve', function () {
         var applicantId = $(this).attr("num");
         var cRow = $(this).parents('tr');
+        console.log(JSON.stringify(applicantId));
         cRow.fadeOut("slow", function () {
             $.ajax({
                 url: "/admin/approveapplicant",
