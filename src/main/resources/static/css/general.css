@@ -58,3 +58,11 @@ table th td{
     position: fixed;
     left: 50%;
 }
+
+.greencheck {
+    color: #32CD32;
+}
+
+.address {
+    width: 400px;
+}

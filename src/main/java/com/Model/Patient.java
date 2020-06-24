@@ -5,6 +5,7 @@
  */
 package com.Model;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.*;
 import java.util.*;
@@ -13,20 +14,25 @@ import java.util.*;
 public class Patient {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private long Id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String Id;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private Set <PatientEventAssociation> patientEventAssociations;
 
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-
         this.patientEventAssociations = new HashSet<>();
     }
 
-    public long getId(){
+    public Patient (String Id) {
+        this.Id = Id;
+        this.patientEventAssociations = new HashSet<>();
+    }
+
+    public String getId(){
         return this.Id;
     }
 
