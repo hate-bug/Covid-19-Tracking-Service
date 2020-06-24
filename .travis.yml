@@ -3,7 +3,7 @@ jdk:
 - oraclejdk8
 dist: trusty
 before_script:
-  - sudo redis-server /etc/redis/redis.conf --port 6379 --requirepass 'secret'
+  - sudo redis-server /etc/redis/redis.conf --port 6379
 deploy:
   provider: heroku
   app: covid-19-tracking-system
