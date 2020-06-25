@@ -14,8 +14,6 @@ import java.util.*;
 public class Patient {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String Id;
 
     @OneToMany (cascade = CascadeType.ALL)

@@ -30,6 +30,10 @@ public class PatientEventAssociation {
         this.isValid = isValid;
     }
 
+    public boolean isVerified (){
+        return this.isValid;
+    }
+
     @Override
     public boolean equals (Object o){
         if (o instanceof PatientEventAssociation){

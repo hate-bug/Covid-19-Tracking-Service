@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 public class EventController {
@@ -34,11 +35,21 @@ public class EventController {
 
     @PostMapping (value = "/eventinfo")
     public Patient addEvent (@RequestBody Event event, HttpSession session, Principal principal) {
+        //prevent user from input garbage event with empty name, empty date or empty place.
+        if (event.getDate()==null ||event.getName().equals("unknwon") || event.getName().equals("") || event.getPlace().getAddress().equals("") || event.getPlace().getAddress().equals("unknown")){
+            return null;
+        }
         boolean isVerified = false;
         if (principal!=null && this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName())!=null){
             isVerified = true;
         }
-        Patient patient = new Patient(session.getId());
+        Optional<Patient> p = this.patientRepository.findById(session.getId());
+        Patient patient;
+        if (p.isPresent()){
+            patient = p.get();
+        } else {
+            patient = new Patient(session.getId());
+        }
         Event existEvent =  this.eventRepo.findAllByNameAndDate(event.getName(), event.getDate());
         if (existEvent!=null){
             event = existEvent;

@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
+    var apiKey = "AIzaSyCYf-bigRT20CHeW79bBbnBjtp0RPeTfes"; //restricted api key
     checkuser();
-
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
@@ -93,7 +93,6 @@ $(document).ready(function () {
                 data: JSON.stringify(event),
                 contentType: "application/json"
             }).done(function () {
-                var span = $('<span />').attr('class', 'greencheck').html("&#10003; Saved");
                 var td = $('<td />').append(span);
                 $("#eventtable tr").eq(info.length).append(td);
             }).fail(function () {
@@ -255,26 +254,17 @@ $(document).ready(function () {
         geolocate(this);
     });
 
-    $("#eventtable tbody").on("input", 'input.address', function () {
-        filllonlat(this);
-    });
 
-    var autocomplete;
+    var placeSearch, autocomplete;
 
 
     function initAutocomplete(element) {
-        // Create the autocomplete object, restricting the search predictions to
-        // geographical location types.
-        autocomplete = new google.maps.places.Autocomplete(
-           element, {types: ['geocode']});
 
-        // Avoid paying for data that you don't need by restricting the set of
-        // place fields that are returned to just the address components.
+        autocomplete = new google.maps.places.Autocomplete(element, {types: ['geocode']});
+
         autocomplete.setFields(['address_component']);
 
-        // When the user selects an address from the drop-down, populate the
-        // address fields in the form.
-        autocomplete.addListener('place_changed', fillInAddress(element));
+        autocomplete.addListener('place_changed', function() {fillInAddress(element)});
     }
 
     // Bias the autocomplete object to the user's geographical location,
@@ -295,15 +285,10 @@ $(document).ready(function () {
     }
 
     function fillInAddress(element) {
-        // Get the place details from the autocomplete object.
-        filllonlat(element);
-    }
-
-    function filllonlat(element) {
         var address = element.value;
         var addrcomponent = address.split(" ");
         var addressValue="";
-        if (addrcomponent.length > 3){
+        if (addrcomponent.length > 2){
             for (var i=0; i<addrcomponent.length; i++){
                 if (i==addressValue.length-1){
                     addressValue = addressValue + addrcomponent[i];
@@ -312,7 +297,7 @@ $(document).ready(function () {
                 }
             }
             $.ajax({
-                url: "https://maps.googleapis.com/maps/api/geocode/json?address="+addressValue+",&key=AIzaSyAquXtUT9HQMlcVU-ruIhj5YrmJlHyX_NY",
+                url: "https://maps.googleapis.com/maps/api/geocode/json?address="+addressValue+",&key="+apiKey,
                 method: "GET"
             }).done(function (data) {
                 var lat = data.results[0].geometry.location.lat;
@@ -322,6 +307,7 @@ $(document).ready(function () {
                 $(tr[0]).find('.latitude').val(lat);
             });
         }
+
     }
 
 });
