@@ -36,3 +36,8 @@ Build in Travis https://travis-ci.com/github/hate-bug/Covid-19-Tracking-Service
 
 Deploy in Heroku: https://covid-19-tracking-system.herokuapp.com/
 
+## External APIs & Addons 
+Google Maps Javascript API, Geocoding API, Places API - For address-autocompletion. 
+Fixie: For static IP address in Heroku application. 
+
+
