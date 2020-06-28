@@ -1,7 +1,7 @@
 package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
-import com.Configuration.PasswordConfig;
+import com.Configuration.ApplicationConfigurationBeans;
 import com.Model.AdminUser;
 import com.Model.Applicant;
 import com.Repository.ApplicantRepository;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminTest {
 
     @Autowired
-    private PasswordConfig passwordConfig;
+    private ApplicationConfigurationBeans passwordConfig;
 
     @Autowired
     private MockMvc mockMvc;

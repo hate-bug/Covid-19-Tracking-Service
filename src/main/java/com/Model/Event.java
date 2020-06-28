@@ -6,7 +6,6 @@
 package com.Model;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -22,7 +21,7 @@ public class Event {
     @OneToOne (cascade = CascadeType.ALL)
     private Place place;
 
-    @OneToMany (cascade = CascadeType.ALL)
+    @OneToMany
     private Set<PatientEventAssociation> patientEventAssociations;
 
     //Default constructor set the time to current date
@@ -55,20 +54,12 @@ public class Event {
         return this.name;
     }
 
-    public void setName (String name){
-        this.name = name;
-    }
-
-    public void setDate (Date date){
-        this.date = date;
-    }
-
     public Date getDate () {
         return this.date;
     }
 
-    public void addAssociation(PatientEventAssociation patient) {
-        this.patientEventAssociations.add(patient);
+    public void addAssociation(PatientEventAssociation association) {
+        this.patientEventAssociations.add(association);
     }
 
     public Set<PatientEventAssociation> getPatientEventAssociations() {

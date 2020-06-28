@@ -13,20 +13,24 @@ import java.util.*;
 public class Patient {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private long Id;
+    private String Id;
 
-    @OneToMany
+    @OneToMany (cascade = CascadeType.ALL)
     private Set <PatientEventAssociation> patientEventAssociations;
 
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-
+        this.Id = UUID.randomUUID().toString();
         this.patientEventAssociations = new HashSet<>();
     }
 
-    public long getId(){
+    public Patient (String Id) {
+        this.Id = Id;
+        this.patientEventAssociations = new HashSet<>();
+    }
+
+    public String getId(){
         return this.Id;
     }
 

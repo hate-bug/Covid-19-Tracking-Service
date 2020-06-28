@@ -1,36 +1,35 @@
 $(document).ready(function () {
 
+    var apiKey = "AIzaSyCYf-bigRT20CHeW79bBbnBjtp0RPeTfes"; //restricted api key
     checkuser();
-
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
         $("#exit").show();
     });
 
-    $("#addevent").click(function () {
+    function getRow (){
         var row = "<tr style=\"text-align:center\">" +
             "<td><input type='text' name='name'></td>" +
             "<td><input type='date' name='date'></td>" +
-            "<td><input type='text' name='address'></td>" +
-            "<td><input type='number' name='longitude'></td>" +
-            "<td><input type='number' name='latitude'></td>" +
+            "<td><input type='text' name='address' class='address'></td>" +
+            "<td><input type='number' class='longitude'></td>" +
+            "<td><input type='number' class='latitude'></td>" +
             "</tr>";
-        $("#eventtable tbody").append(row);
-    });
+        return row;
+    }
 
-    $("#submitpatient").click(function () {
+    $("#addevent").click(function () {
         var info = $("#eventtable tr").get().map(function (tr) {
             return $(tr).find("input").get().map(function (input) {
                 return input.value;
             })
         });
         info.shift();
-        var events = [];
-        for (var i=0; i<info.length; i++){
+        if (info.length>0){
             var event = new Object();
             var place = new Object();
-            $.each(info[i], function (index, value) {
+            $.each(info[info.length-1], function (index, value) {
                 if (index%5 == 0){ //Event name
                     event.name = value;
                 } else if (index%5 == 1){//Event date
@@ -42,28 +41,78 @@ $(document).ready(function () {
                 } else if (index%5 == 4){//latitude
                     place.latitude = value;
                     event.place = place;
-                    events.push(event);
                 }
             });
+            $.ajax({
+                url: "/eventinfo",
+                method: "POST",
+                data: JSON.stringify(event),
+                contentType: "application/json"
+            }).done(function () {
+                var span = $('<span />').attr('class', 'greencheck').html("&#10003; Saved");
+                var td = $('<td />').append(span);
+                $("#eventtable tr").eq(info.length).append(td);
+                var row = getRow();
+                $("#eventtable tbody").append(row);
+            }).fail(function () {
+                alert ("server error, please check your input");
+            });
+        } else {
+            var row = getRow();
+            $("#eventtable tbody").append(row);
         }
-        var patientdata = JSON.stringify(events);
+    });
 
-        $.ajax({
-            url: "/patientinfo",
-            data: patientdata,
-            type: "POST",
-            dataType: "text",
-            contentType: "application/json"
-        }).done(function (data) {
-            alert("Data posted");
-            $("#exit").hide();
-            $("#welcomesection").show();
-            $("#patientinfo").hide();
-            $("#eventtable tbody > tr").empty();
-        }).fail(function (data) {
-            alert("Server Error, please confirm data try again.");
+    $("#submitpatient").click(function () {
+        var info = $("#eventtable tr").get().map(function (tr) {
+            return $(tr).find("input").get().map(function (input) {
+                return input.value;
+            })
         });
-
+        info.shift();
+        if (info.length>0){
+            var event = new Object();
+            var place = new Object();
+            $.each(info[info.length-1], function (index, value) {
+                if (index%5 == 0){ //Event name
+                    event.name = value;
+                } else if (index%5 == 1){//Event date
+                    event.date = value;
+                } else if (index%5 == 2){//Event Address
+                    place.address = value;
+                }else if (index%5 == 3){//longitude
+                    place.longitude = value;
+                } else if (index%5 == 4){//latitude
+                    place.latitude = value;
+                    event.place = place;
+                }
+            });
+            $.ajax({
+                url: "/eventinfo",
+                method: "POST",
+                data: JSON.stringify(event),
+                contentType: "application/json"
+            }).done(function () {
+                var td = $('<td />').append(span);
+                $("#eventtable tr").eq(info.length).append(td);
+            }).fail(function () {
+                alert ("server error, please check your input");
+            });
+            $.ajax({
+                url: "/submitpatient" ,
+                method: "PUT"
+            }).done(function () {
+                alert("Data posted");
+                $("#exit").hide();
+                $("#welcomesection").show();
+                $("#patientinfo").hide();
+                $("#eventtable tbody > tr").empty();
+            }).fail(function () {
+                alert("Server error.");
+            });
+        } else {
+            alert("Please input data first");
+        }
     });
 
     $("#exit").click(function () {
@@ -200,5 +249,66 @@ $(document).ready(function () {
     $("#changepasswordbutton").click(function () {
         window.location = "/changepassword";
     });
+
+    $("#eventtable tbody").on("click", 'input.address', function () {
+        geolocate(this);
+    });
+
+
+    var placeSearch, autocomplete;
+
+
+    function initAutocomplete(element) {
+
+        autocomplete = new google.maps.places.Autocomplete(element, {types: ['geocode']});
+
+        autocomplete.setFields(['address_component']);
+
+        autocomplete.addListener('place_changed', function() {fillInAddress(element)});
+    }
+
+    // Bias the autocomplete object to the user's geographical location,
+    // as supplied by the browser's 'navigator.geolocation' object.
+    function geolocate(element) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var geolocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                var circle = new google.maps.Circle(
+                    {center: geolocation, radius: position.coords.accuracy});
+                autocomplete.setBounds(circle.getBounds());
+            });
+        }
+        initAutocomplete(element);
+    }
+
+    function fillInAddress(element) {
+        var place = autocomplete.getPlace();
+        var address = element.value;
+        var addrcomponent = address.split(" ");
+        var addressValue="";
+        if (addrcomponent.length > 2){
+            for (var i=0; i<addrcomponent.length; i++){
+                if (i==addressValue.length-1){
+                    addressValue = addressValue + addrcomponent[i];
+                } else{
+                    addressValue = addressValue + addrcomponent[i] + "+";
+                }
+            }
+            $.ajax({
+                url: "https://maps.googleapis.com/maps/api/geocode/json?address="+addressValue+",&key="+apiKey,
+                method: "GET"
+            }).done(function (data) {
+                var lat = data.results[0].geometry.location.lat;
+                var lon = data.results[0].geometry.location.lng;
+                var tr = $(element).parent().parent();
+                $(tr[0]).find('.longitude').val(lon);
+                $(tr[0]).find('.latitude').val(lat);
+            });
+        }
+
+    }
 
 });
