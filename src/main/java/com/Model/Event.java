@@ -58,8 +58,8 @@ public class Event {
         return this.date;
     }
 
-    public void addAssociation(PatientEventAssociation assoiciation) {
-        this.patientEventAssociations.add(assoiciation);
+    public void addAssociation(PatientEventAssociation association) {
+        this.patientEventAssociations.add(association);
     }
 
     public Set<PatientEventAssociation> getPatientEventAssociations() {

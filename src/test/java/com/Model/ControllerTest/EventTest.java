@@ -9,6 +9,7 @@ import com.Repository.AssociationRepository;
 import com.Repository.EventRepository;
 import com.Repository.PatientRepository;
 import com.Repository.UserRepository;
+import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -109,5 +110,17 @@ public class EventTest {
         patients.clear();
         this.patientRepository.findAll().forEach(patients::add);
         assertEquals(3, patients.size());
+    }
+
+    @Test
+    public void testEvent () throws Exception {
+        String event = "{\"name\":\"e1\",\"date\":\"2020-12-12\",\"place\":{\"address\":\"2201 Riverside Drive, Ottawa, ON, Canada\",\"longitude\":\"-75.6745825\",\"latitude\":\"45.38841\"}}";
+        mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
+                .andExpect(status().isOk());
+        Iterable<Event> list = this.eventRepository.findAll();
+        assertEquals(1, IterableUtil.sizeOf(list));
+        mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
+                .andExpect(status().isOk());
+        assertEquals(1, IterableUtil.sizeOf(list));
     }
 }

@@ -15,7 +15,7 @@ public class TrackingSystemWebSecurityConfigurerService extends WebSecurityConfi
     private TrackingSystemUserDetailsService trackingSystemUserDetailsService;
 
     @Autowired
-    private PasswordConfig passwordConfig;
+    private ApplicationConfigurationBeans passwordConfig;
 
     @Autowired
     public void configureGlobal( AuthenticationManagerBuilder auth ) throws Exception {

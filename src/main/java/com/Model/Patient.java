@@ -5,7 +5,6 @@
  */
 package com.Model;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.persistence.*;
 import java.util.*;
@@ -22,6 +21,7 @@ public class Patient {
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
+        this.Id = UUID.randomUUID().toString();
         this.patientEventAssociations = new HashSet<>();
     }
 

@@ -6,6 +6,6 @@ import java.util.Date;
 
 public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {
 
-    public Event findAllByNameAndDate(String name, Date date);
+    public Event findByNameAndDate (String name, Date date);
 
 }

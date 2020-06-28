@@ -285,6 +285,7 @@ $(document).ready(function () {
     }
 
     function fillInAddress(element) {
+        var place = autocomplete.getPlace();
         var address = element.value;
         var addrcomponent = address.split(" ");
         var addressValue="";
