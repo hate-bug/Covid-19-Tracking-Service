@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -34,7 +35,7 @@ public class EventController {
     }
 
     @PostMapping (value = "/eventinfo")
-    public Patient addAttendedEvent (@RequestBody Event event, HttpSession session, Principal principal) {
+    public Patient addPatientEventAssociation (@RequestBody Event event, HttpSession session, Principal principal) {
         //prevent user from input garbage event with empty name, empty date or empty place.
         if (event.getDate()==null ||event.getName().equals("unknwon") || event.getName().equals("") || event.getPlace().getAddress().equals("") || event.getPlace().getAddress().equals("unknown")){
             return null;
@@ -50,9 +51,9 @@ public class EventController {
         } else {
             patient = new Patient(session.getId());
         }
-        Event existEvent =  this.eventRepo.findByNameAndDate(event.getName(), event.getDate());
-        if (existEvent!=null){
-            event = existEvent;
+        List<Event> existEvents =  this.eventRepo.findAllByNameAndDate(event.getName(), event.getDate());
+        if (existEvents.indexOf(event)>-1){
+            event = existEvents.get(existEvents.indexOf(event));
         }
         PatientEventAssociation association = new PatientEventAssociation(event, patient, isVerified);
         event.addAssociation(association);
