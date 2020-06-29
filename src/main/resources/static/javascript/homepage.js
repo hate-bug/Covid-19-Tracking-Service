@@ -92,11 +92,9 @@ $(document).ready(function () {
                 method: "POST",
                 data: JSON.stringify(event),
                 contentType: "application/json"
-            }).done(function () {
-                var td = $('<td />').append(span);
-                $("#eventtable tr").eq(info.length).append(td);
             }).fail(function () {
                 alert ("server error, please check your input");
+                return;
             });
             $.ajax({
                 url: "/submitpatient" ,
@@ -121,8 +119,14 @@ $(document).ready(function () {
 
     function showEvents(currentPageNum){
         $("#eventlist tbody").empty();
+        var requestUrl = "";
+        if ($("#verifycheck").is(":checked")){ //show only verified user
+            requestUrl = "/allverifiedevents";
+        } else {
+            requestUrl = "/allevents";
+        }
         $.ajax({
-            url: "/allEvents?page="+currentPageNum,
+            url: requestUrl+"?page="+currentPageNum,
             type: "GET"
         }).done(function (data, textStatus, request) {
             var content = data.content;
@@ -290,25 +294,23 @@ $(document).ready(function () {
         var addrcomponent = address.split(" ");
         var addressValue="";
         if (addrcomponent.length > 2){
-            for (var i=0; i<addrcomponent.length; i++){
-                if (i==addressValue.length-1){
-                    addressValue = addressValue + addrcomponent[i];
-                } else{
-                    addressValue = addressValue + addrcomponent[i] + "+";
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode( { 'address': address}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var lat = results[0].geometry.location.lat();
+                    var lon = results[0].geometry.location.lng();
+                    var tr = $(element).parent().parent();
+                    $(tr[0]).find('.longitude').val(lon);
+                    $(tr[0]).find('.latitude').val(lat);
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
                 }
-            }
-            $.ajax({
-                url: "https://maps.googleapis.com/maps/api/geocode/json?address="+addressValue+",&key="+apiKey,
-                method: "GET"
-            }).done(function (data) {
-                var lat = data.results[0].geometry.location.lat;
-                var lon = data.results[0].geometry.location.lng;
-                var tr = $(element).parent().parent();
-                $(tr[0]).find('.longitude').val(lon);
-                $(tr[0]).find('.latitude').val(lat);
             });
         }
-
     }
+
+    $("#verifycheck").change(function () {
+        showEvents(1);
+    });
 
 });
