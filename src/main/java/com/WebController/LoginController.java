@@ -19,7 +19,7 @@ public class LoginController {
 
     @GetMapping (value = "/isloggedin")
     public ResponseEntity<String> isloggedin (Authentication authentication){
-        if (authentication!=null && authentication.isAuthenticated()){
+        if (authentication!=null && authentication.isAuthenticated() && this.userRepository.findUserByEmailAddressIgnoreCase(authentication.getName())!=null){
             return new ResponseEntity<>(authentication.getName(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Not logged in", HttpStatus.NOT_FOUND);

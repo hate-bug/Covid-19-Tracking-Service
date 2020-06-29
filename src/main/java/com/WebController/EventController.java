@@ -24,14 +24,22 @@ public class EventController {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private AssociationRepository associationRepository;
+
     /**
      * DoGet handler for all events.
      * User will get a list of all existing events with number of attended patients
      */
-    @GetMapping(value = "/allEvents")
+    @GetMapping(value = "/allevents")
     public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum){
         Page<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 10));
         return events;
+    }
+
+    @GetMapping(value="/allverifiedevents")
+    public Page<Event> getEvents (@RequestParam("page") int pageNum){
+        return this.associationRepository.findAllValidEvents(PageRequest.of(pageNum-1, 10));
     }
 
     @PostMapping (value = "/eventinfo")
