@@ -121,6 +121,12 @@ public class EventTest {
         assertEquals(1, IterableUtil.sizeOf(list));
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
                 .andExpect(status().isOk());
+        list = this.eventRepository.findAll();
         assertEquals(1, IterableUtil.sizeOf(list));
+        String event1 = "{\"name\":\"e1\",\"date\":\"2020-12-12\",\"place\":{\"address\":\"2203 Riverside Drive, Ottawa, ON, Canada\",\"longitude\":\"-75.6745825\",\"latitude\":\"45.38841\"}}";
+        mockMvc.perform(post("/eventinfo").content(event1).contentType("application/json"))
+                .andExpect(status().isOk());
+        list = this.eventRepository.findAll();
+        assertEquals(2, IterableUtil.sizeOf(list));
     }
 }
