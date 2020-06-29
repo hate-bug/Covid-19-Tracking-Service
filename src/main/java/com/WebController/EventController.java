@@ -33,12 +33,11 @@ public class EventController {
      */
     @GetMapping(value = "/allevents")
     public Iterable<Event> getAllEvents (@RequestParam("page") int pageNum){
-        Page<Event> events = this.eventRepo.findAll( PageRequest.of(pageNum-1, 10));
-        return events;
+        return this.eventRepo.findAll( PageRequest.of(pageNum-1, 10));
     }
 
     @GetMapping(value="/allverifiedevents")
-    public Page<Event> getEvents (@RequestParam("page") int pageNum){
+    public Page<Event> getVerifiedEvents (@RequestParam("page") int pageNum){
         return this.associationRepository.findAllValidEvents(PageRequest.of(pageNum-1, 10));
     }
 

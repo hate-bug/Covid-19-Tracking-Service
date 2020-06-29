@@ -1,10 +1,7 @@
 package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
-import com.Model.Event;
-import com.Model.Patient;
-import com.Model.PatientEventAssociation;
-import com.Model.User;
+import com.Model.*;
 import com.Repository.AssociationRepository;
 import com.Repository.EventRepository;
 import com.Repository.PatientRepository;
@@ -20,9 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import static junit.framework.TestCase.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(classes = Tracking_System_Application.class)
 @AutoConfigureMockMvc
@@ -128,5 +130,41 @@ public class EventTest {
                 .andExpect(status().isOk());
         list = this.eventRepository.findAll();
         assertEquals(2, IterableUtil.sizeOf(list));
+    }
+
+    @Test
+    public void testVerifiedEvent() throws Exception {
+        Patient p1 = new Patient();
+        Patient p2 = new Patient();
+        Patient p3 = new Patient();
+        Event e1 = new Event("E1", new Place("2201 Riverside", 110.21, -11.23), new Date(2020,11,12));
+        Event e2 = new Event("E2", new Place("2201 Riverside", 110.21, -11.23), new Date(2020,11,12));
+        Event e3 = new Event("E3", new Place("2201 Riverside", 110.21, -11.23), new Date(2020,11,12));
+        PatientEventAssociation a1 = new PatientEventAssociation(e1, p1, true);
+        PatientEventAssociation a2 = new PatientEventAssociation(e2, p2, false);
+        PatientEventAssociation a3 = new PatientEventAssociation(e3, p3, true);
+        p1.addAssociation(a1);
+        e1.addAssociation(a1);
+        p2.addAssociation(a2);
+        e2.addAssociation(a2);
+        p3.addAssociation(a3);
+        e3.addAssociation(a3);
+        Patient[] patients = {p1, p2, p3};
+        Iterable<Patient> patientList = Arrays.asList(patients);
+        this.patientRepository.saveAll(patientList);
+        assertEquals(3, IterableUtil.sizeOf(this.associationRepository.findAll()));
+        MvcResult result = mockMvc.perform(get("/allverifiedevents?page=1")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements",is(2)))
+                .andExpect(jsonPath("$.content[0].name", is("E1")))
+                .andExpect(jsonPath("$.content[0].patientEventAssociations",hasSize(1)))
+                .andExpect(jsonPath("$.content[1].name", is("E3")))
+                .andReturn();
+        MvcResult result2 = mockMvc.perform(get("/allevents?page=1")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.numberOfElements",is(3)))
+                .andExpect(jsonPath("$.content[0].name", is("E1")))
+                .andExpect(jsonPath("$.content[0].patientEventAssociations",hasSize(1)))
+                .andExpect(jsonPath("$.content[1].name", is("E2")))
+                .andExpect(jsonPath("$.content[2].name", is("E3")))
+                .andReturn();
     }
 }
