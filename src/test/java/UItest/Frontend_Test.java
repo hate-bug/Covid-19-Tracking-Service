@@ -1,0 +1,57 @@
+package UItest;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import static org.junit.Assert.assertTrue;
+
+@Testcontainers
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class Frontend_Test {
+
+    @LocalServerPort
+    private int port;
+
+    /**
+     * User go to the homepage, click on the "Create Patient" button and create an association
+     * then submit the patient. After that, user should be able to see created event list in event list.
+     * @throws InterruptedException
+     */
+    @Test
+    public void UserCreatePatientAndSubmitPatient() throws InterruptedException {
+        //Go to the homepage
+        WebDriver driver = new ChromeDriver();
+        driver.get("http://localhost:8080");
+        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
+
+        //Go to the create patient page
+        driver.findElement(By.id("createpatient")).click();
+        driver.findElement(By.id("addevent")).click();
+        assertTrue(driver.findElement(By.id("eventtable")).getText().contains("Event name"));
+        driver.findElement(By.name("name")).sendKeys("e1");
+        driver.findElement(By.name("date")).sendKeys("2020-07-01");
+        driver.findElement(By.name("address")).click();
+        driver.findElement(By.name("address")).sendKeys("Carleton University, Ottawa, ON, Canada");
+        driver.findElement(By.name("address")).sendKeys(Keys.ENTER);
+
+        //Longitude and latitude value should be automatically retrieved.
+        Thread.sleep(2000);
+        assertTrue(driver.findElement(By.className("latitude")).getAttribute("value").contains("45"));
+        assertTrue(driver.findElement(By.className("longitude")).getAttribute("value").contains("75"));
+        //User click on the submit patient button and back to the homepage
+        driver.findElement(By.id("submitpatient")).click();
+        Thread.sleep(1000);
+        driver.switchTo().alert().accept();
+        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
+
+        //go to events page and should be able to see the event just added
+        driver.findElement(By.id("showevents")).click();
+        Thread.sleep(1000);
+        assertTrue(driver.findElement(By.xpath("//table[@id='eventlist']")).getText().contains("Carleton University"));
+    }
+}

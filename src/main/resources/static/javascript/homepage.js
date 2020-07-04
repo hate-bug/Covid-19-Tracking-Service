@@ -121,44 +121,56 @@ $(document).ready(function () {
         $("#eventlist tbody").empty();
         var requestUrl = "";
         if ($("#verifycheck").is(":checked")){ //show only verified user
-            requestUrl = "/allverifiedevents";
+            requestUrl = "/association/search/findAllValidEvents";
         } else {
-            requestUrl = "/allevents";
+            requestUrl = "/event";
         }
         $.ajax({
             url: requestUrl+"?page="+currentPageNum,
             type: "GET"
         }).done(function (data, textStatus, request) {
-            var content = data.content;
+            var content = data._embedded.event;
             $.each(content, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
                 if (eventdate!=null && eventdate.indexOf("T")!=-1){
                     eventdate = (eventdate.split("T"))[0];//only show the yyyy-mm-dd.
                 }
-                var place = value.place;
-                var address = place.address;
-                var longitude = place.longitude;
-                var latitude = place.latitude;
-                var num = (value.patientEventAssociations).length;
-                var row = "<tr style=\"text-align:center\">" +
-                    "<td>"+ eventname +"</td>" +
-                    "<td>"+ eventdate +"</td>" +
-                    "<td>"+ address +"</td>" +
-                    "<td>"+ longitude +"</td>" +
-                    "<td>"+ latitude +"</td>" +
-                    "<td>"+ num +"</td>" +
-                    "</tr>";
-                $("#eventlist tbody").append(row);
+                var placeurl = value._links.place.href;
+                var associationurl = value._links.patientEventAssociations.href;
+                $.ajax({
+                    url: placeurl,
+                    type: "GET"
+                }).done(function (data) {
+                    var address = data.address;
+                    var longitude = data.longitude;
+                    var latitude = data.latitude;
+                    $.ajax({
+                        url: associationurl,
+                        type: "GET"
+                    }).done(function (data) {
+                        var num = data._embedded.PatientEventAssociation.length;
+                        var row = "<tr style=\"text-align:center\">" +
+                            "<td>"+ eventname +"</td>" +
+                            "<td>"+ eventdate +"</td>" +
+                            "<td>"+ address +"</td>" +
+                            "<td>"+ longitude +"</td>" +
+                            "<td>"+ latitude +"</td>" +
+                            "<td>"+ num +"</td>" +
+                            "</tr>";
+                        $("#eventlist tbody").append(row);
+                    });
+                });
+
             });
             $("#nextpagebutton").hide();
             $("#lastpagebutton").hide();
 
-            if (data.last==false){
+            if (data._links.hasOwnProperty("next")){
                 $("#nextpagebutton").show();
                 $("#nextpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)+1);
             }
-            if (data.first==false){
+            if (data._links.hasOwnProperty("prev")){
                 $("#lastpagebutton").show();
                 $("#lastpagebutton").attr("pagenumber", parseInt(currentPageNum, 10)-1);
             }
@@ -179,7 +191,8 @@ $(document).ready(function () {
     });
 
     $("#showevents").click(function () {
-       showEvents(1);
+       showEvents(0);
+       createMap();
     });
 
     $("#registerbutton").click(function () {
@@ -258,6 +271,12 @@ $(document).ready(function () {
         geolocate(this);
     });
 
+    $("#eventtable tbody").on("keypress", 'input.address', function (e) {
+        if (e.keyCode == 13){
+            fillInAddress(this);
+        }
+    });
+
 
     var placeSearch, autocomplete;
 
@@ -310,7 +329,39 @@ $(document).ready(function () {
     }
 
     $("#verifycheck").change(function () {
-        showEvents(1);
+        showEvents(0);
+        createMap();
     });
 
+    function createMap() {
+        heatmapData = [];
+        var Ottawa = new google.maps.LatLng(54.170193, -96.857464);
+        var map = new google.maps.Map(document.getElementById("googlemap"), {
+            center: Ottawa,
+            zoom: 4,
+            mapTypeId: 'roadmap'
+        });
+        var requestUrl;
+        if ($("#verifycheck").is(":checked")){ //show only verified user
+            requestUrl = "/association/search/findAllValidPlaces";
+        } else {
+            requestUrl = "/association/search/findAllPlaces";
+        }
+        $.ajax({
+            url: requestUrl,
+            type: "GET"
+        }).done(function (result) {
+            var content = result._embedded.place;
+            var heatmapData = [];
+            $.each(content, function (index, value) {
+                heatmapData.push(new google.maps.LatLng(value.latitude, value.longitude));
+            });
+            heatmap = new google.maps.visualization.HeatmapLayer({
+                data: heatmapData,
+                map: map
+            });
+            heatmap.set("radius,20");
+            //heatmap.setMap(map);
+        });
+    }
 });

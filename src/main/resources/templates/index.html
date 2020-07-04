@@ -6,7 +6,7 @@
     <link rel="stylesheet" media="all" type="text/css" href="css/general.css" th:href="@{css/general.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYf-bigRT20CHeW79bBbnBjtp0RPeTfes&libraries=geometry,places&callback=initAutocomplete" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYf-bigRT20CHeW79bBbnBjtp0RPeTfes&libraries=geometry,places,visualization&callback=initAutocomplete" async defer></script>
     <meta charset="UTF-8">
     <title>COVID19-Tracking-System</title>
 </head>
@@ -34,8 +34,8 @@
     </header>
     <br>
     <div id="welcomesection">
-        <button id="createpatient">Create patient</button>
-        <button id="showevents">Show events</button>
+        <button id="createpatient" class="mybutton">Create patient</button>
+        <button id="showevents" class="mybutton">Show events</button>
     </div>
     <div id="patientinfo" style="display: none">
         <table class="table table-striped" id="eventtable" style="width: 80%">
@@ -51,8 +51,8 @@
             <tbody></tbody>
         </table>
         <div class="center">
-            <button id="addevent">Add Event</button>
-            <button id="submitpatient">Submit Information</button>
+            <button class="mybutton" id="addevent">Add Event</button>
+            <button class="mybutton" id="submitpatient">Submit Information</button>
         </div>
     </div>
 
@@ -75,8 +75,11 @@
             <tbody></tbody>
         </table>
         <div class="center">
-            <button id="lastpagebutton" class="center" style="display: none">Last page</button>
-            <button id="nextpagebutton" class="center" style="display: none">Next page</button>
+            <button id="lastpagebutton" class="center mybutton" style="display: none">Last page</button>
+            <button id="nextpagebutton" class="center mybutton" style="display: none">Next page</button>
+        </div>
+        <div class="mymap">
+            <div id="googlemap" style="width: 100%; height: 100%"></div>
         </div>
     </div>
 

@@ -2,6 +2,11 @@ language: java
 jdk:
 - oraclejdk8
 dist: trusty
+addons:
+  chrome: beta
+before_install:
+  - # start your web application and listen on `localhost`
+  - "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --headless --disable-gpu --remote-debugging-port=9222 http://localhost:8080 &"
 before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
 deploy:

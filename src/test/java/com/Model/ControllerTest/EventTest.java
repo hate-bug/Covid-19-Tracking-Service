@@ -46,9 +46,14 @@ public class EventTest {
     @Autowired
     private PatientRepository patientRepository;
 
+    /**
+     * When verified user posts events, he is able to create verified associations.
+     * However, user cannot create duplicate events.
+     * @throws Exception
+     */
     @Test
     @WithMockUser(username="user",roles={"USER"})
-    public void testPostEventsWithUser () throws Exception {
+    public void VerifiedUserPostEvent () throws Exception {
         this.userRepository.save(new User("user", "user"));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
@@ -64,10 +69,22 @@ public class EventTest {
         this.associationRepository.findAll().forEach(assoications::add);
         assertEquals(1, assoications.size());
         assertEquals(true, assoications.get(0).isVerified());
+
+        //If user post duplicated event, database does persist it.
+        mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
+                .andExpect(status().isOk());
+        list.clear();
+        this.eventRepository.findAll().forEach(list::add);
+        assertEquals(1, list.size());
+        assertEquals("e1", list.get(0).getName());
     }
 
+    /**
+     * Anonymous users are able to create unverified associations. They cannot post duplicated events.
+     * @throws Exception
+     */
     @Test
-    public void testPostEventsWithoutUser () throws Exception {
+    public void AnonymousUserPostEvents () throws Exception {
         this.userRepository.save(new User("user", "user"));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
@@ -83,10 +100,20 @@ public class EventTest {
         this.associationRepository.findAll().forEach(assoications::add);
         assertEquals(1, assoications.size());
         assertEquals(false, assoications.get(0).isVerified());
+        //Post another duplicated event, it should be ignored
+        mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
+                .andExpect(status().isOk());
+        list.clear();
+        this.eventRepository.findAll().forEach(list::add);
+        assertEquals(1, list.size());
     }
 
+    /**
+     * When user create events with different sessions, new patients should be created each time.
+     * @throws Exception
+     */
     @Test
-    public void testPatient () throws Exception {
+    public void UserCreateAssociationsWithDifferentSessions () throws Exception {
         MockHttpSession session = new MockHttpSession();
         ArrayList <Patient> patients = new ArrayList<>();
         this.patientRepository.findAll().forEach(patients::add);
@@ -114,8 +141,12 @@ public class EventTest {
         assertEquals(3, patients.size());
     }
 
+    /**
+     * When user post different events, they should be persisted by DB.
+     * @throws Exception
+     */
     @Test
-    public void testEvent () throws Exception {
+    public void AnonymousCreateDifferentEvents () throws Exception {
         String event = "{\"name\":\"e1\",\"date\":\"2020-12-12\",\"place\":{\"address\":\"2201 Riverside Drive, Ottawa, ON, Canada\",\"longitude\":\"-75.6745825\",\"latitude\":\"45.38841\"}}";
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
                 .andExpect(status().isOk());
@@ -132,8 +163,15 @@ public class EventTest {
         assertEquals(2, IterableUtil.sizeOf(list));
     }
 
+    /**
+     * @Before: Three different associations exist in database: verified association between P1 and E1,
+     * unverified assiciation between P2 and E2, Verified association between P3 and E3.
+     * @After: When user is trying to get all verified associations, they will get information about E1 and E3.
+     * User can get all three events if choose all events option.
+     * @throws Exception
+     */
     @Test
-    public void testVerifiedEvent() throws Exception {
+    public void RetrieveVerifiedOrAllEvents() throws Exception {
         Patient p1 = new Patient();
         Patient p2 = new Patient();
         Patient p3 = new Patient();
@@ -153,18 +191,16 @@ public class EventTest {
         Iterable<Patient> patientList = Arrays.asList(patients);
         this.patientRepository.saveAll(patientList);
         assertEquals(3, IterableUtil.sizeOf(this.associationRepository.findAll()));
-        MvcResult result = mockMvc.perform(get("/allverifiedevents?page=1")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements",is(2)))
-                .andExpect(jsonPath("$.content[0].name", is("E1")))
-                .andExpect(jsonPath("$.content[0].patientEventAssociations",hasSize(1)))
-                .andExpect(jsonPath("$.content[1].name", is("E3")))
+        MvcResult result = mockMvc.perform(get("/association/search/findAllValidEvents")).andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.event",hasSize(2)))
+                .andExpect(jsonPath("$._embedded.event[0].name", is("E1")))
+                .andExpect(jsonPath("$._embedded.event[1].name", is("E3")))
                 .andReturn();
-        MvcResult result2 = mockMvc.perform(get("/allevents?page=1")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfElements",is(3)))
-                .andExpect(jsonPath("$.content[0].name", is("E1")))
-                .andExpect(jsonPath("$.content[0].patientEventAssociations",hasSize(1)))
-                .andExpect(jsonPath("$.content[1].name", is("E2")))
-                .andExpect(jsonPath("$.content[2].name", is("E3")))
+        MvcResult result2 = mockMvc.perform(get("/event")).andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.event",hasSize(3)))
+                .andExpect(jsonPath("$._embedded.event[0].name", is("E1")))
+                .andExpect(jsonPath("$._embedded.event[1].name", is("E2")))
+                .andExpect(jsonPath("$._embedded.event[2].name", is("E3")))
                 .andReturn();
     }
 }

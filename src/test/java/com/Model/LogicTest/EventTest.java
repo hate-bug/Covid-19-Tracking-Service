@@ -1,6 +1,5 @@
 package com.Model.LogicTest;
 
-
 import com.Model.Event;
 import com.Model.Patient;
 import com.Model.PatientEventAssociation;
