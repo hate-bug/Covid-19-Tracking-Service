@@ -5,7 +5,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,14 +25,18 @@ public class Frontend_Test {
     @Test
     public void TestWithGoogle() throws Exception {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
-        this.driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.setHeadless(true);
+        this.driver = new ChromeDriver(options);
         UserCreatePatientAndSubmitPatient();
     }
 
     @Test
     public void TestWithFireFox () throws Exception {
         System.setProperty("webdriver.gecko.driver", "src/test/resources/firefoxdriver");
-        this.driver = new FirefoxDriver();
+        FirefoxOptions option = new FirefoxOptions();
+        option.setHeadless(true);
+        this.driver = new FirefoxDriver(option);
         UserCreatePatientAndSubmitPatient();
     }
 
