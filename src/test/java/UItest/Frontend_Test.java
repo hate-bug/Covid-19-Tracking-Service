@@ -24,7 +24,7 @@ public class Frontend_Test {
 
     @Test
     public void TestWithGoogle() throws Exception {
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/local/share/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
         this.driver = new ChromeDriver(options);
@@ -33,7 +33,7 @@ public class Frontend_Test {
 
     @Test
     public void TestWithFireFox () throws Exception {
-        System.setProperty("webdriver.gecko.driver", "src/test/resources/firefoxdriver");
+        System.setProperty("webdriver.gecko.driver", "/usr/local/share/geckodriver");
         FirefoxOptions option = new FirefoxOptions();
         option.setHeadless(true);
         this.driver = new FirefoxDriver(option);
