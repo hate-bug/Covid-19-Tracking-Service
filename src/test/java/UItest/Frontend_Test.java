@@ -48,7 +48,7 @@ public class Frontend_Test {
 
     public void UserCreatePatientAndSubmitPatient() throws InterruptedException {
         //Go to the homepage
-        driver.get("http://localhost:8080");
+        driver.get("http://127.0.0.1:8000");
         assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
         //Go to the create patient page
         driver.findElement(By.id("createpatient")).click();
