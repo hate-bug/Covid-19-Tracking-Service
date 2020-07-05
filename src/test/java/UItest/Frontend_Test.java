@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,24 +18,38 @@ public class Frontend_Test {
     @LocalServerPort
     private int port;
 
+    private WebDriver driver;
+
+    @Test
+    public void TestWithGoogle() throws Exception {
+        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
+        this.driver = new ChromeDriver();
+        UserCreatePatientAndSubmitPatient();
+    }
+
+    @Test
+    public void TestWithFireFox () throws Exception {
+        System.setProperty("webdriver.gecko.driver", "src/test/resources/firefoxdriver");
+        this.driver = new FirefoxDriver();
+        UserCreatePatientAndSubmitPatient();
+    }
+
     /**
      * User go to the homepage, click on the "Create Patient" button and create an association
      * then submit the patient. After that, user should be able to see created event list in event list.
      * @throws InterruptedException
      */
-    @Test
+
     public void UserCreatePatientAndSubmitPatient() throws InterruptedException {
         //Go to the homepage
-        WebDriver driver = new ChromeDriver();
         driver.get("http://localhost:8080");
         assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
-
         //Go to the create patient page
         driver.findElement(By.id("createpatient")).click();
         driver.findElement(By.id("addevent")).click();
         assertTrue(driver.findElement(By.id("eventtable")).getText().contains("Event name"));
         driver.findElement(By.name("name")).sendKeys("e1");
-        driver.findElement(By.name("date")).sendKeys("2020-07-01");
+        driver.findElement(By.name("date")).sendKeys("20200701");
         driver.findElement(By.name("address")).click();
         driver.findElement(By.name("address")).sendKeys("Carleton University, Ottawa, ON, Canada");
         driver.findElement(By.name("address")).sendKeys(Keys.ENTER);

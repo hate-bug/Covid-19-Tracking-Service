@@ -11,7 +11,7 @@ $(document).ready(function () {
     function getRow (){
         var row = "<tr style=\"text-align:center\">" +
             "<td><input type='text' name='name'></td>" +
-            "<td><input type='date' name='date'></td>" +
+            "<td><input type='date' max='2030-12-31' name='date'></td>" +
             "<td><input type='text' name='address' class='address'></td>" +
             "<td><input type='number' class='longitude'></td>" +
             "<td><input type='number' class='latitude'></td>" +
