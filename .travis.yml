@@ -3,7 +3,9 @@ jdk:
 - oraclejdk8
 dist: trusty
 addons:
-  chrome: beta
+  apt:
+    packages:
+      - google-chrome-stable
   firefox: latest
 before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
