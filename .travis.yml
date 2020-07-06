@@ -11,7 +11,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
 install:
-  - wget -N https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip -P ~/
+  - wget -N https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
@@ -23,10 +23,6 @@ install:
   - rm ~/geckodriver-v0.26.0-linux64.tar.gz
   - sudo mv -f ~/geckodriver /usr/local/share/
   - sudo chmod +x /usr/local/share/geckodriver
-script:
-  - whereis google-chrome-stable
-  - whereis chromedriver
-  - google-chrome-stable --version
 deploy:
   provider: heroku
   app: covid-19-tracking-system
