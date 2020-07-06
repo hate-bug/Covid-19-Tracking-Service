@@ -22,14 +22,14 @@ public class Frontend_Test {
 
     private WebDriver driver;
 
-    @Test
+    /*@Test
     public void TestWithGoogle() throws Exception {
         System.setProperty("webdriver.chrome.driver", "/usr/local/share/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
         this.driver = new ChromeDriver(options);
         UserCreatePatientAndSubmitPatient();
-    }
+    }*/
 
     @Test
     public void TestWithFireFox () throws Exception {
