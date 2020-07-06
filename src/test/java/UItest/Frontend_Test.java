@@ -26,7 +26,7 @@ public class Frontend_Test {
 
     @Test
     public void TestWithGoogle() throws Exception {
-        System.setProperty("webdriver.chrome.driver", "/usr/local/share/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
         options.addArguments("--disable-gpu");
