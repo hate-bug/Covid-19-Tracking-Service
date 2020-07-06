@@ -16,12 +16,16 @@ install:
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 
   - wget -N https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz -P ~/
   - tar xf ~/geckodriver-v0.26.0-linux64.tar.gz -C ~/
   - rm ~/geckodriver-v0.26.0-linux64.tar.gz
   - sudo mv -f ~/geckodriver /usr/local/share/
   - sudo chmod +x /usr/local/share/geckodriver
+script:
+  - whereis google-chrome-stable
+  - whereis chromedriver
 deploy:
   provider: heroku
   app: covid-19-tracking-system
