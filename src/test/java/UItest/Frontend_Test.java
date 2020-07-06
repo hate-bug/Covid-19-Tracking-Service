@@ -8,6 +8,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.ProfilesIni;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -34,7 +36,10 @@ public class Frontend_Test {
     @Test
     public void TestWithFireFox () throws Exception {
         System.setProperty("webdriver.gecko.driver", "/usr/local/share/geckodriver");
+        ProfilesIni profile = new ProfilesIni();
+        FirefoxProfile myProfile = profile.getProfile("default");
         FirefoxOptions option = new FirefoxOptions();
+        option.setProfile(myProfile);
         option.setHeadless(true);
         this.driver = new FirefoxDriver(option);
         UserCreatePatientAndSubmitPatient();
