@@ -3,7 +3,7 @@ jdk:
 - oraclejdk8
 dist: trusty
 addons:
-  chrome: stable
+  chrome: beta
   firefox: latest
 before_script:
   - sudo redis-server /etc/redis/redis.conf --port 6379
@@ -11,7 +11,7 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
 install:
-  - wget -N https://chromedriver.storage.googleapis.com/80.0.3987.106/chromedriver_linux64.zip -P ~/
+  - wget -N https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
