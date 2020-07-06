@@ -1,6 +1,8 @@
 package UItest;
 
+import com.Application.Tracking_System_Application;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -8,15 +10,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.ProfilesIni;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import javax.transaction.Transactional;
 import static org.junit.Assert.assertTrue;
 
 @Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = Tracking_System_Application.class)
+@Transactional
 public class Frontend_Test {
 
     @LocalServerPort
@@ -24,9 +29,15 @@ public class Frontend_Test {
 
     private WebDriver driver;
 
+    @Value("${spring.google.location}")
+    private String googleLocation;
+
+    @Value("${spring.ff.location}")
+    private String ffLocation;
+
     @Test
     public void TestWithGoogle() throws Exception {
-        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver", googleLocation);
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
         options.addArguments("--disable-gpu");
@@ -36,12 +47,10 @@ public class Frontend_Test {
 
     @Test
     public void TestWithFireFox () throws Exception {
-        System.setProperty("webdriver.gecko.driver", "/usr/local/share/geckodriver");
-        ProfilesIni profile = new ProfilesIni();
-        FirefoxProfile myProfile = profile.getProfile("default");
+        System.setProperty("webdriver.gecko.driver", ffLocation);
         FirefoxOptions option = new FirefoxOptions();
-        option.setProfile(myProfile);
         option.setHeadless(true);
+        option.addArguments("--disable-gpu");
         this.driver = new FirefoxDriver(option);
         UserCreatePatientAndSubmitPatient();
     }
@@ -51,17 +60,16 @@ public class Frontend_Test {
      * then submit the patient. After that, user should be able to see created event list in event list.
      * @throws InterruptedException
      */
-
     public void UserCreatePatientAndSubmitPatient() throws InterruptedException {
         //Go to the homepage
-        driver.get("http://127.0.0.1:8000");
+        driver.get("http://localhost:8080");
         assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
         //Go to the create patient page
         driver.findElement(By.id("createpatient")).click();
         driver.findElement(By.id("addevent")).click();
         assertTrue(driver.findElement(By.id("eventtable")).getText().contains("Event name"));
         driver.findElement(By.name("name")).sendKeys("e1");
-        driver.findElement(By.name("date")).sendKeys("20200701");
+        driver.findElement(By.name("date")).sendKeys("2020-07-01");
         driver.findElement(By.name("address")).click();
         driver.findElement(By.name("address")).sendKeys("Carleton University, Ottawa, ON, Canada");
         driver.findElement(By.name("address")).sendKeys(Keys.ENTER);
