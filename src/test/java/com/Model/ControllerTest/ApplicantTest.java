@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import javax.transaction.Transactional;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,10 +23,16 @@ public class ApplicantTest {
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * When user submit an applicant, it should be stored inside applicant repository
+     * @throws Exception
+     */
     @Test
-    public void testApplicant () throws Exception {
-        String jsonString = "{\"applicantEmail\":\"test@testa.com\",\"description\":\"adfajsldfjaf;a\"}";
+    public void UserCreateApplication () throws Exception {
+        assertFalse(this.applicantRepository.existsByApplicantEmail("test@test.com"));
+        String jsonString = "{\"applicantEmail\":\"test@test.com\",\"description\":\"adfajsldfjaf;a\"}";
         mockMvc.perform(post("/postapplication").content(jsonString).contentType("application/json"))
                 .andExpect(status().isOk());
+        assertTrue(this.applicantRepository.existsByApplicantEmail("test@test.com"));
     }
 }

@@ -5,8 +5,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Date;
 import java.util.List;
 
-public interface EventRepository extends PagingAndSortingRepository<Event, Integer> {
+public interface EventRepository extends PagingAndSortingRepository<Event, Long> {
 
-    public List<Event> findAllByNameAndDate (String name, Date date);
+    List<Event> findAllByNameAndDate (String name, Date date);
 
 }
