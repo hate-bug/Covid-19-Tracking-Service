@@ -18,5 +18,5 @@ public interface AssociationRepository extends PagingAndSortingRepository<Patien
 
     @Query("SELECT p.event.place FROM PatientEventAssociation p ")
     Iterable<Place> findAllPlaces ();
-    
+
 }

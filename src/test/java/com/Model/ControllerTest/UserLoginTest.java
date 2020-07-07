@@ -55,6 +55,9 @@ public class UserLoginTest {
         RequestBuilder requestBody = formLogin().user ("emailaddress",this.userName).password("password","testpasswordeee").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(unauthenticated());
+        RequestBuilder requestBody1 = formLogin().user ("emailaddress","atmin@admin.ca").password("password","testpassword").loginProcessingUrl("/userlogin");
+        mockMvc.perform(requestBody)
+                .andExpect(unauthenticated());
     }
 
     /**
