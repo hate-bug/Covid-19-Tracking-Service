@@ -121,15 +121,15 @@ $(document).ready(function () {
         $("#eventlist tbody").empty();
         var requestUrl = "";
         if ($("#verifycheck").is(":checked")){ //show only verified user
-            requestUrl = "/association/search/findAllValidEvents";
+            requestUrl = "/patientEventAssociations/search/findAllValidEvents";
         } else {
-            requestUrl = "/event";
+            requestUrl = "/events";
         }
         $.ajax({
             url: requestUrl+"?page="+currentPageNum,
             type: "GET"
         }).done(function (data, textStatus, request) {
-            var content = data._embedded.event;
+            var content = data._embedded.events;
             $.each(content, function (index, value) {
                 var eventname = value.name;
                 var eventdate = value.date;
@@ -149,8 +149,8 @@ $(document).ready(function () {
                         url: associationurl,
                         type: "GET"
                     }).done(function (data) {
-                        var num = data._embedded.PatientEventAssociation.length;
-                        var row = "<tr style=\"text-align:center\">" +
+                        var num = data._embedded.patientEventAssociations.length;
+                        var row = "<tr style=\"txt-align:center\">" +
                             "<td>"+ eventname +"</td>" +
                             "<td>"+ eventdate +"</td>" +
                             "<td>"+ address +"</td>" +
@@ -343,15 +343,15 @@ $(document).ready(function () {
         });
         var requestUrl;
         if ($("#verifycheck").is(":checked")){ //show only verified user
-            requestUrl = "/association/search/findAllValidPlaces";
+            requestUrl = "/patientEventAssociations/search/findAllValidPlaces";
         } else {
-            requestUrl = "/association/search/findAllPlaces";
+            requestUrl = "/patientEventAssociations/search/findAllPlaces";
         }
         $.ajax({
             url: requestUrl,
             type: "GET"
         }).done(function (result) {
-            var content = result._embedded.place;
+            var content = result._embedded.places;
             var heatmapData = [];
             $.each(content, function (index, value) {
                 heatmapData.push(new google.maps.LatLng(value.latitude, value.longitude));
@@ -361,7 +361,6 @@ $(document).ready(function () {
                 map: map
             });
             heatmap.set("radius,20");
-            //heatmap.setMap(map);
         });
     }
 });

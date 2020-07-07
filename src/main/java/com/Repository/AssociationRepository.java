@@ -5,9 +5,7 @@ import com.Model.PatientEventAssociation;
 import com.Model.Place;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel = "PatientEventAssociation", path = "association")
 public interface AssociationRepository extends PagingAndSortingRepository<PatientEventAssociation, Long> {
 
     @Query("SELECT DISTINCT p.event FROM PatientEventAssociation p " +
@@ -20,4 +18,5 @@ public interface AssociationRepository extends PagingAndSortingRepository<Patien
 
     @Query("SELECT p.event.place FROM PatientEventAssociation p ")
     Iterable<Place> findAllPlaces ();
+    
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,12 +54,12 @@ public class EventTest {
      */
     @Test
     @WithMockUser(username="user",roles={"USER"})
-    public void VerifiedUserPostEvent () throws Exception {
+    public void verifiedUserPostEvent () throws Exception {
         this.userRepository.save(new User("user", "user"));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
-        ArrayList<PatientEventAssociation> assoications = new ArrayList<>();
+        ArrayList<PatientEventAssociation> associations = new ArrayList<>();
         String event = "{\"name\":\"e1\",\"date\":\"2020-12-12\",\"place\":{\"address\":\"2201 Riverside Drive, Ottawa, ON, Canada\",\"longitude\":\"-75.6745825\",\"latitude\":\"45.38841\"}}";
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
                 .andExpect(status().isOk());
@@ -66,9 +67,9 @@ public class EventTest {
         assertEquals(1, list.size());
         assertEquals("e1", list.get(0).getName());
         assertEquals("2201 Riverside Drive, Ottawa, ON, Canada", list.get(0).getPlace().getAddress());
-        this.associationRepository.findAll().forEach(assoications::add);
-        assertEquals(1, assoications.size());
-        assertEquals(true, assoications.get(0).isVerified());
+        this.associationRepository.findAll().forEach(associations::add);
+        assertEquals(1, associations.size());
+        assertEquals(true, associations.get(0).isVerified());
 
         //If user post duplicated event, database does persist it.
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
@@ -84,7 +85,7 @@ public class EventTest {
      * @throws Exception
      */
     @Test
-    public void AnonymousUserPostEvents () throws Exception {
+    public void anonymousUserPostEvents () throws Exception {
         this.userRepository.save(new User("user", "user"));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
@@ -99,7 +100,7 @@ public class EventTest {
         assertEquals("2201 Riverside Drive, Ottawa, ON, Canada", list.get(0).getPlace().getAddress());
         this.associationRepository.findAll().forEach(assoications::add);
         assertEquals(1, assoications.size());
-        assertEquals(false, assoications.get(0).isVerified());
+        assertFalse( assoications.get(0).isVerified());
         //Post another duplicated event, it should be ignored
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
                 .andExpect(status().isOk());
@@ -113,7 +114,7 @@ public class EventTest {
      * @throws Exception
      */
     @Test
-    public void UserCreateAssociationsWithDifferentSessions () throws Exception {
+    public void userCreateAssociationsWithDifferentSessions () throws Exception {
         MockHttpSession session = new MockHttpSession();
         ArrayList <Patient> patients = new ArrayList<>();
         this.patientRepository.findAll().forEach(patients::add);
@@ -146,7 +147,7 @@ public class EventTest {
      * @throws Exception
      */
     @Test
-    public void AnonymousCreateDifferentEvents () throws Exception {
+    public void nonymousUserCreateDifferentEvents () throws Exception {
         String event = "{\"name\":\"e1\",\"date\":\"2020-12-12\",\"place\":{\"address\":\"2201 Riverside Drive, Ottawa, ON, Canada\",\"longitude\":\"-75.6745825\",\"latitude\":\"45.38841\"}}";
         mockMvc.perform(post("/eventinfo").content(event).contentType("application/json"))
                 .andExpect(status().isOk());
@@ -171,7 +172,7 @@ public class EventTest {
      * @throws Exception
      */
     @Test
-    public void RetrieveVerifiedOrAllEvents() throws Exception {
+    public void retrieveVerifiedOrAllEvents() throws Exception {
         Patient p1 = new Patient();
         Patient p2 = new Patient();
         Patient p3 = new Patient();

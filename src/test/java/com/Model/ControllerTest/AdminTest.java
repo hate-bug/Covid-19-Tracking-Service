@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -118,12 +118,12 @@ public class AdminTest {
     public void adminAppprove () throws Exception {
         Applicant applicant = this.applicantRepository.save(new Applicant(this.emailAddress, "description text"));
         long id = applicant.getId();
-        assertEquals (false, this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)!=null);
+        assertFalse (this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)!=null);
         String data = "\"" + String.valueOf(id) + "\"";
         this.mockMvc.perform(post("/admin/approveapplicant").content(data).contentType("application/json"))
                 .andExpect(status().isOk());
-        assertEquals (false, this.applicantRepository.existsById(id));
-        assertEquals (true, this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)!=null);
+        assertFalse (this.applicantRepository.existsById(id));
+        assertNotNull (this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress));
     }
 
     /**
@@ -139,9 +139,9 @@ public class AdminTest {
         String data = String.valueOf(id);
         this.mockMvc.perform(delete("/admin/deleteapplicant?id="+data))
                 .andExpect(status().isOk());
-        assertEquals(false, this.applicantRepository.existsById(id));
+        assertFalse( this.applicantRepository.existsById(id));
         //user should not exist inside Userrepository since it's declined
-        assertEquals (true, this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
+        assertTrue (this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
     }
 
     /**
@@ -158,12 +158,12 @@ public class AdminTest {
         String data = String.valueOf(id);
         this.mockMvc.perform(delete("/admin/deleteapplicant?id="+data))
                 .andExpect(status().isForbidden());
-        assertEquals(true, this.applicantRepository.existsById(id));
+        assertTrue( this.applicantRepository.existsById(id));
         //user should not exist inside Userrepository since it's declined
-        assertEquals (true, this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
+        assertTrue ( this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
         this.mockMvc.perform(post("/admin/approveapplicant").content(data).contentType("application/json"))
                 .andExpect(status().isForbidden());
-        assertEquals(true, this.applicantRepository.existsById(id));
+        assertTrue(this.applicantRepository.existsById(id));
     }
 
     /**
@@ -180,11 +180,11 @@ public class AdminTest {
         String data = String.valueOf(id);
         this.mockMvc.perform(delete("/admin/deleteapplicant?id="+data))
                 .andExpect(status().isFound());
-        assertEquals(true, this.applicantRepository.existsById(id));
+        assertTrue(this.applicantRepository.existsById(id));
         //user should not exist inside Userrepository since it's declined
-        assertEquals (true, this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
+        assertTrue (this.userRepository.findUserByEmailAddressIgnoreCase(this.emailAddress)==null);
         this.mockMvc.perform(post("/admin/approveapplicant").content(data).contentType("application/json"))
                 .andExpect(status().isFound());
-        assertEquals(true, this.applicantRepository.existsById(id));
+        assertTrue(this.applicantRepository.existsById(id));
     }
 }
