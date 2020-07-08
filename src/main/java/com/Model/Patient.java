@@ -13,7 +13,10 @@ import java.util.*;
 public class Patient {
 
     @Id
-    private String Id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long Id;
+
+    private String sessionId;
 
     @OneToMany (cascade = CascadeType.ALL)
     private Set <PatientEventAssociation> patientEventAssociations;
@@ -21,17 +24,17 @@ public class Patient {
     //All patients are anonymous, name is not needed for constructor
     @Autowired
     public Patient(){
-        this.Id = UUID.randomUUID().toString();
+        this.sessionId = UUID.randomUUID().toString();
         this.patientEventAssociations = new HashSet<>();
     }
 
-    public Patient (String Id) {
-        this.Id = Id;
+    public Patient (String SessionId) {
+        this.sessionId = SessionId;
         this.patientEventAssociations = new HashSet<>();
     }
 
-    public String getId(){
-        return this.Id;
+    public String getSessionId(){
+        return this.sessionId;
     }
 
     //Event list should not exist any redundant event, check ID before adding the event
@@ -44,13 +47,13 @@ public class Patient {
     }
 
     /**
-     *Return true if two patients have the same Id
+     *Return true if two patients have the same session Id
      */
     @Override
     public boolean equals (Object o){
         if (o instanceof Patient){
             Patient p = (Patient) o;
-            if (p.Id == this.Id){
+            if (p.sessionId == this.sessionId){
                 return true;
             }
         }

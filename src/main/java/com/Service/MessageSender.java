@@ -2,6 +2,7 @@ package com.Service;
 
 import com.Model.Applicant;
 import com.Model.User;
+import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,8 @@ public class MessageSender {
         message.setSubject("COVID-19 tracking system account.");
         message.setFrom(this.senderEmailAddress);
         String password = UUID.randomUUID().toString();
-        User user = new User(applicant.getApplicantEmail(), password);
+        UserPassword userPassword = new UserPassword(password);
+        User user = new User(applicant.getApplicantEmail(), userPassword);
         this.userRepository.save(user);
         message.setText("Your account password is:"
                 + password + "\n You can change your password after logging in.");

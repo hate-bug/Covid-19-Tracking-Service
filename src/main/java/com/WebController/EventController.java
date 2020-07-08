@@ -3,8 +3,6 @@ package com.WebController;
 import com.Model.*;
 import com.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,7 +32,7 @@ public class EventController {
         if (principal!=null && this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName())!=null){
             isVerified = true;
         }
-        Optional<Patient> p = this.patientRepository.findById(session.getId());
+        Optional<Patient> p = this.patientRepository.findBySessionId(session.getId());
         Patient patient;
         if (p.isPresent()){
             patient = p.get();

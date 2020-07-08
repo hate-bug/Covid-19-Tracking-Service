@@ -56,7 +56,7 @@ public class EventTest {
     @Test
     @WithMockUser(username="user",roles={"USER"})
     public void verifiedUserPostEvent () throws Exception {
-        this.userRepository.save(new User("user", "user"));
+        this.userRepository.save(new User("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
@@ -98,7 +98,7 @@ public class EventTest {
      */
     @Test
     public void anonymousUserPostEvents () throws Exception {
-        this.userRepository.save(new User("user", "user"));
+        this.userRepository.save(new User("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
@@ -132,7 +132,7 @@ public class EventTest {
 
     /**
      * When user create events with different sessions, new patients should be created each time.
-     * Each patient has its own attended place, three places should be returned here. 
+     * Each patient has its own attended place, three places should be returned here.
      * @throws Exception
      */
     @Test
