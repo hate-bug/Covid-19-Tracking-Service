@@ -9,4 +9,6 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Long>
 
     List<Event> findAllByNameAndDate (String name, Date date);
 
+    Iterable<Event> findAllByNameContainingIgnoreCase (String name);
+
 }

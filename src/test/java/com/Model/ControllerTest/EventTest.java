@@ -79,17 +79,13 @@ public class EventTest {
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(1, list.size());
         assertEquals("e1", list.get(0).getName());
-        mockMvc.perform(get("/patientEventAssociations/search/findAllPlaces").contentType("application/json"))
+        mockMvc.perform(get("/patientEventAssociations").contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.places",hasSize(2)))
-                .andExpect(jsonPath("$._embedded.places[0].longitude", is(-75.6745825)))
-                .andExpect(jsonPath("$._embedded.places[0].address", is("2201 Riverside Drive, Ottawa, ON, Canada")));
-        mockMvc.perform(get("/patientEventAssociations/search/findAllValidPlaces").contentType("application/json"))
+                .andExpect(jsonPath("$._embedded.patientEventAssociations",hasSize(2)))
+                .andExpect(jsonPath("$._embedded.patientEventAssociations[0].verified",is(true)));
+        mockMvc.perform(get("/patientEventAssociations/search/findAllByisValid?isValid=true").contentType("application/json"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$._embedded.places",hasSize(2)))
-            .andExpect(jsonPath("$._embedded.places[0].longitude", is(-75.6745825)))
-            .andExpect(jsonPath("$._embedded.places[0].latitude", is(45.38841)))
-            .andExpect(jsonPath("$._embedded.places[0].address", is("2201 Riverside Drive, Ottawa, ON, Canada")));
+            .andExpect(jsonPath("$._embedded.patientEventAssociations",hasSize(2)));
     }
 
     /**
@@ -119,15 +115,9 @@ public class EventTest {
         list.clear();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(1, list.size());
-        mockMvc.perform(get("/patientEventAssociations/search/findAllPlaces").contentType("application/json"))
+        mockMvc.perform(get("/patientEventAssociations").contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.places",hasSize(2)))
-                .andExpect(jsonPath("$._embedded.places[0].longitude", is(-75.6745825)))
-                .andExpect(jsonPath("$._embedded.places[0].address", is("2201 Riverside Drive, Ottawa, ON, Canada")));
-        mockMvc.perform(get("/patientEventAssociations/search/findAllValidPlaces").contentType("application/json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.places",hasSize(0)));
-
+                .andExpect(jsonPath("$._embedded.patientEventAssociations",hasSize(2)));
     }
 
     /**
@@ -162,11 +152,9 @@ public class EventTest {
         patients.clear();
         this.patientRepository.findAll().forEach(patients::add);
         assertEquals(3, patients.size());
-        mockMvc.perform(get("/patientEventAssociations/search/findAllPlaces").contentType("application/json"))
+        mockMvc.perform(get("/patientEventAssociations").contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.places",hasSize(3)))
-                .andExpect(jsonPath("$._embedded.places[0].longitude", is(-75.6745825)))
-                .andExpect(jsonPath("$._embedded.places[0].address", is("2201 Riverside Drive, Ottawa, ON, Canada")));
+                .andExpect(jsonPath("$._embedded.patientEventAssociations",hasSize(3)));
     }
 
     /**
@@ -219,16 +207,11 @@ public class EventTest {
         Iterable<Patient> patientList = Arrays.asList(patients);
         this.patientRepository.saveAll(patientList);
         assertEquals(3, IterableUtil.sizeOf(this.associationRepository.findAll()));
-        MvcResult result = mockMvc.perform(get("/patientEventAssociations/search/findAllValidEvents")).andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.events",hasSize(2)))
-                .andExpect(jsonPath("$._embedded.events[0].name", is("E1")))
-                .andExpect(jsonPath("$._embedded.events[1].name", is("E3")))
+        MvcResult result = mockMvc.perform(get("/patientEventAssociations/search/findAllByisValid?isValid=true")).andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.patientEventAssociations",hasSize(2)))
                 .andReturn();
         MvcResult result2 = mockMvc.perform(get("/events")).andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.events",hasSize(3)))
-                .andExpect(jsonPath("$._embedded.events[0].name", is("E1")))
-                .andExpect(jsonPath("$._embedded.events[1].name", is("E2")))
-                .andExpect(jsonPath("$._embedded.events[2].name", is("E3")))
                 .andReturn();
     }
 }
