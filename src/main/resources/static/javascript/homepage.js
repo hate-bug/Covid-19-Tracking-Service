@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     var apiKey = "AIzaSyCYf-bigRT20CHeW79bBbnBjtp0RPeTfes"; //restricted api key
     checkuser();
+    $("#exit").hide();
     $("#createpatient").click(function () {
         $("#welcomesection").hide();
         $("#patientinfo").show();
@@ -111,10 +112,6 @@ $(document).ready(function () {
         } else {
             alert("Please input data first");
         }
-    });
-
-    $("#exit").click(function () {
-        $("#exit").hide();
     });
 
     function showEvents(currentPageNum){
