@@ -63,7 +63,7 @@ public class Frontend_Test {
     public void UserCreatePatientAndSubmitPatient() throws InterruptedException {
         //Go to the homepage
         driver.get("http://localhost:8080");
-        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
+        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19 Tracking System"));
         //Go to the create patient page
         driver.findElement(By.id("createpatient")).click();
         driver.findElement(By.id("addevent")).click();
@@ -82,7 +82,7 @@ public class Frontend_Test {
         driver.findElement(By.id("submitpatient")).click();
         Thread.sleep(1000);
         driver.switchTo().alert().accept();
-        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19-Tracking-System"));
+        assertTrue(driver.findElement(By.className("blog-header-logo")).getText().contains("Covid-19 Tracking System"));
 
         //go to events page and should be able to see the event just added
         driver.findElement(By.id("showevents")).click();
