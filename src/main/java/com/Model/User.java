@@ -3,7 +3,6 @@ package com.Model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,15 +15,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String emailAddress;
-    private String password; //Encrypted password
+
+    @Embedded
+    @AttributeOverrides(value = {
+            @AttributeOverride(name = "password", column = @Column(nullable = false))
+    })
+    private UserPassword userPassword;
 
     public User(){
-        this("unknown", "unknown");
+        this("unknown", new UserPassword());
     }
 
-    public User (String emailAddress, String password){
+    public User (String emailAddress, UserPassword userPassword){
         this.emailAddress = emailAddress;
-        this.password = new BCryptPasswordEncoder().encode(password);
+        this.userPassword = userPassword;
     }
 
     public String getEmailAddress (){
@@ -38,8 +42,9 @@ public class User implements UserDetails {
         return roles ;
     }
 
-    public String getPassword (){
-        return this.password;
+    @Override
+    public String getPassword() {
+        return this.userPassword.getPassword();
     }
 
     @Override
@@ -67,9 +72,9 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setPassword (String password){
+    public void setUserPassword(UserPassword password){
 
-        this.password = new BCryptPasswordEncoder().encode(password);
+        this.userPassword = password;
     }
 
     public long getId (){

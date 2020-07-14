@@ -1,6 +1,7 @@
 package com.Configuration;
 
 import com.Model.AdminUser;
+import com.Model.UserPassword;
 import com.Repository.ApplicantRepository;
 import com.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +22,12 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     private String adminuser;
 
     @Value("${admin_password}")
-    private String password;
+    private String plainPasswordString;
 
     @Override
     public void run(String... args) throws Exception {
-        AdminUser adminUser = new AdminUser(this.adminuser, this.password);
+        UserPassword userPassword = new UserPassword(this.plainPasswordString);
+        AdminUser adminUser = new AdminUser(this.adminuser, userPassword);
         this.userRepository.save(adminUser);
     }
 }

@@ -4,6 +4,7 @@ import com.Application.Tracking_System_Application;
 import com.Configuration.ApplicationConfigurationBeans;
 import com.Model.AdminUser;
 import com.Model.Applicant;
+import com.Model.UserPassword;
 import com.Repository.ApplicantRepository;
 import com.Repository.UserRepository;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class AdminTest {
      */
     @Test
     public void AdminLoginTest () throws Exception {
-        AdminUser adminUser = new AdminUser("test@test.test", "testpassword");
+        AdminUser adminUser = new AdminUser("test@test.test", new UserPassword("testpassword"));
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
@@ -78,7 +79,7 @@ public class AdminTest {
      */
     @Test
     public void AdminLoginTestWithWrongCredentials () throws Exception {
-        AdminUser adminUser = new AdminUser("test@test.test", "testpassword");
+        AdminUser adminUser = new AdminUser("test@test.test", new UserPassword("testpassword"));
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword222").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)

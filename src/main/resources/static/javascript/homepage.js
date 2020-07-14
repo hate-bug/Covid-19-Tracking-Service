@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     function getRow (){
         var row = "<tr style=\"text-align:center\">" +
-            "<td><input type='text' name='name'></td>" +
+            "<td><input type='text' class='eventname' name='eventname'></td>" +
             "<td><input type='date' max='2030-12-31' name='date'></td>" +
             "<td><input type='text' name='address' class='address'></td>" +
             "<td><input type='number' class='longitude'></td>" +
@@ -119,49 +119,62 @@ $(document).ready(function () {
 
     function showEvents(currentPageNum){
         $("#eventlist tbody").empty();
+        var heatmapData = [];
         var requestUrl = "";
+        var eventsize;
+        createMap(heatmapData); //clean heatmap
         if ($("#verifycheck").is(":checked")){ //show only verified user
-            requestUrl = "/patientEventAssociations/search/findAllValidEvents";
+            requestUrl = "/patientEventAssociations/search/findAllByisValid?isValid=true&";
         } else {
-            requestUrl = "/events";
+            requestUrl = "/patientEventAssociations";
         }
         $.ajax({
             url: requestUrl+"?page="+currentPageNum,
             type: "GET"
         }).done(function (data, textStatus, request) {
-            var content = data._embedded.events;
+            var content = data._embedded.patientEventAssociations;
+            eventsize = content.length;
             $.each(content, function (index, value) {
-                var eventname = value.name;
-                var eventdate = value.date;
-                if (eventdate!=null && eventdate.indexOf("T")!=-1){
-                    eventdate = (eventdate.split("T"))[0];//only show the yyyy-mm-dd.
-                }
-                var placeurl = value._links.place.href;
-                var associationurl = value._links.patientEventAssociations.href;
+                var eventUrl = value._links.event.href;
                 $.ajax({
-                    url: placeurl,
-                    type: "GET"
-                }).done(function (data) {
-                    var address = data.address;
-                    var longitude = data.longitude;
-                    var latitude = data.latitude;
+                   url: eventUrl,
+                   type: "GET"
+                }).done (function (value) {
+                    var eventname = value.name;
+                    var eventdate = value.date;
+                    if (eventdate!=null && eventdate.indexOf("T")!=-1){
+                        eventdate = (eventdate.split("T"))[0];//only show the yyyy-mm-dd.
+                    }
+                    var placeurl = value._links.place.href;
+                    var associationurl = value._links.patientEventAssociations.href;
                     $.ajax({
-                        url: associationurl,
+                        url: placeurl,
                         type: "GET"
                     }).done(function (data) {
-                        var num = data._embedded.patientEventAssociations.length;
-                        var row = "<tr style=\"txt-align:center\">" +
-                            "<td>"+ eventname +"</td>" +
-                            "<td>"+ eventdate +"</td>" +
-                            "<td>"+ address +"</td>" +
-                            "<td>"+ longitude +"</td>" +
-                            "<td>"+ latitude +"</td>" +
-                            "<td>"+ num +"</td>" +
-                            "</tr>";
-                        $("#eventlist tbody").append(row);
+                        var address = data.address;
+                        var longitude = data.longitude;
+                        var latitude = data.latitude;
+                        heatmapData.push(new google.maps.LatLng(latitude, longitude));
+                        if (heatmapData.length == eventsize) {
+                            createMap(heatmapData);
+                        }
+                        $.ajax({
+                            url: associationurl,
+                            type: "GET"
+                        }).done(function (data) {
+                            var num = data._embedded.patientEventAssociations.length;
+                            var row = "<tr style=\"txt-align:center\">" +
+                                "<td>"+ eventname +"</td>" +
+                                "<td>"+ eventdate +"</td>" +
+                                "<td>"+ address +"</td>" +
+                                "<td>"+ longitude +"</td>" +
+                                "<td>"+ latitude +"</td>" +
+                                "<td>"+ num +"</td>" +
+                                "</tr>";
+                            $("#eventlist tbody").append(row);
+                            });
                     });
                 });
-
             });
             $("#nextpagebutton").hide();
             $("#lastpagebutton").hide();
@@ -192,7 +205,6 @@ $(document).ready(function () {
 
     $("#showevents").click(function () {
        showEvents(0);
-       createMap();
     });
 
     $("#registerbutton").click(function () {
@@ -277,6 +289,32 @@ $(document).ready(function () {
         }
     });
 
+    $("#eventtable tbody").on("input click", 'input.eventname', function () {
+        var inputElement = this;
+        var eventinput = this.value;
+        var recommendlist = [];
+        $.ajax({
+            type: "GET",
+            url: "/events/search/findAllByNameContainingIgnoreCase?name="+eventinput
+        }).done(function (result) {
+            $.each(result._embedded.events, function (index, value) {
+                recommendlist.push(value.name);
+            });
+            $(inputElement).autocomplete({
+                //appendTo: $(inputElement),
+                source: recommendlist,
+                open: function() {
+                    var position = $(inputElement).position(),
+                        left = position.left, top = position.top;
+
+                    $("#results > ul").css({left: left + 20 + "px",
+                        top: top + 4 + "px" });
+
+                }
+            });
+        });
+
+    });
 
     var placeSearch, autocomplete;
 
@@ -330,37 +368,19 @@ $(document).ready(function () {
 
     $("#verifycheck").change(function () {
         showEvents(0);
-        createMap();
     });
 
-    function createMap() {
-        heatmapData = [];
-        var Ottawa = new google.maps.LatLng(54.170193, -96.857464);
+    function createMap(heatmapData) {
+        var center = new google.maps.LatLng(54.170193, -96.857464);
         var map = new google.maps.Map(document.getElementById("googlemap"), {
-            center: Ottawa,
+            center: center,
             zoom: 4,
             mapTypeId: 'roadmap'
         });
-        var requestUrl;
-        if ($("#verifycheck").is(":checked")){ //show only verified user
-            requestUrl = "/patientEventAssociations/search/findAllValidPlaces";
-        } else {
-            requestUrl = "/patientEventAssociations/search/findAllPlaces";
-        }
-        $.ajax({
-            url: requestUrl,
-            type: "GET"
-        }).done(function (result) {
-            var content = result._embedded.places;
-            var heatmapData = [];
-            $.each(content, function (index, value) {
-                heatmapData.push(new google.maps.LatLng(value.latitude, value.longitude));
-            });
-            heatmap = new google.maps.visualization.HeatmapLayer({
-                data: heatmapData,
-                map: map
-            });
-            heatmap.set("radius,20");
+        heatmap = new google.maps.visualization.HeatmapLayer({
+            data: heatmapData,
+            map: map
         });
+        heatmap.set("radius,20");
     }
 });

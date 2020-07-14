@@ -1,6 +1,7 @@
 package com.WebController;
 
 import com.Model.User;
+import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import com.Payload.ConfirmPasswordPayload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ public class LoginController {
         if (!new BCryptPasswordEncoder().matches(confirmPasswordPayload.getOldPassword(), user.getPassword())){ //check old password
             return false;
         }
-        user.setPassword(confirmPasswordPayload.getNewPassword());
+        UserPassword password = new UserPassword(confirmPasswordPayload.getNewPassword());
+        user.setUserPassword(password);
         this.userRepository.save(user);
         return true;
     }

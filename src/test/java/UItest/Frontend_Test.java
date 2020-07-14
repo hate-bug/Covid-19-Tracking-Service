@@ -68,7 +68,7 @@ public class Frontend_Test {
         driver.findElement(By.id("createpatient")).click();
         driver.findElement(By.id("addevent")).click();
         assertTrue(driver.findElement(By.id("eventtable")).getText().contains("Event name"));
-        driver.findElement(By.name("name")).sendKeys("e1");
+        driver.findElement(By.name("eventname")).sendKeys("e1");
         driver.findElement(By.name("date")).sendKeys("2020-07-01");
         driver.findElement(By.name("address")).click();
         driver.findElement(By.name("address")).sendKeys("Carleton University, Ottawa, ON, Canada");
