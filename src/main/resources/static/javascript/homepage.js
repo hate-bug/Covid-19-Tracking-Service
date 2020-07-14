@@ -104,7 +104,7 @@ $(document).ready(function () {
                 $("#exit").hide();
                 $("#welcomesection").show();
                 $("#patientinfo").hide();
-                $("#eventtable tbody > tr").empty();
+                $("#eventtable tbody").empty();
             }).fail(function () {
                 alert("Server error.");
             });
