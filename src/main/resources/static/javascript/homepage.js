@@ -4,6 +4,7 @@ $(document).ready(function () {
     checkuser();
     $("#exit").hide();
     $("#createpatient").click(function () {
+        $("#eventtable > tbody").html("");
         $("#welcomesection").hide();
         $("#patientinfo").show();
         $("#exit").show();
@@ -14,57 +15,78 @@ $(document).ready(function () {
             "<td><input type='text' class='eventname' name='eventname'></td>" +
             "<td><input type='date' max='2030-12-31' name='date'></td>" +
             "<td><input type='text' name='address' class='address'></td>" +
-            "<td><input type='number' class='longitude'></td>" +
-            "<td><input type='number' class='latitude'></td>" +
             "</tr>";
         return row;
     }
 
     $("#addevent").click(function () {
+        var existFunction = false;
         var info = $("#eventtable tr").get().map(function (tr) {
             return $(tr).find("input").get().map(function (input) {
                 return input.value;
             })
         });
         info.shift();
-        if (info.length>0){
+        if (info.length > 0) {
             var event = new Object();
             var place = new Object();
-            $.each(info[info.length-1], function (index, value) {
-                if (index%5 == 0){ //Event name
-                    event.name = value;
-                } else if (index%5 == 1){//Event date
+            $.each(info[info.length - 1], function (index, value) {
+                if (value == "" || value == 'undefined') {
+                    alert("Please complete patient information.");
+                    existFunction = true;
+                    return false;
+                }
+                if (index % 3 == 0) { //Event name
+                    event.name = value.trim();
+                } else if (index % 3 == 1) {//Event date
                     event.date = value;
-                } else if (index%5 == 2){//Event Address
+                } else if (index % 3 == 2) {//Event Address
                     place.address = value;
-                }else if (index%5 == 3){//longitude
-                    place.longitude = value;
-                } else if (index%5 == 4){//latitude
-                    place.latitude = value;
                     event.place = place;
+                    getLngLat(event, info);
                 }
             });
-            $.ajax({
-                url: "/eventinfo",
-                method: "POST",
-                data: JSON.stringify(event),
-                contentType: "application/json"
-            }).done(function () {
-                var span = $('<span />').attr('class', 'greencheck').html("&#10003; Saved");
-                var td = $('<td />').append(span);
-                $("#eventtable tr").eq(info.length).append(td);
-                var row = getRow();
-                $("#eventtable tbody").append(row);
-            }).fail(function () {
-                alert ("server error, please check your input");
-            });
+            if (existFunction == true){
+                return;
+            }
         } else {
             var row = getRow();
             $("#eventtable tbody").append(row);
         }
     });
 
+    function getLngLat(event, info) {
+        var coordinates = new Object();
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': event.place.address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                var lat = results[0].geometry.location.lat();
+                var lon = results[0].geometry.location.lng();
+                event.place.latitude = lat;
+                event.place.longitude = lon;
+                $.ajax({
+                    url: "/eventinfo",
+                    method: "POST",
+                    data: JSON.stringify(event),
+                    contentType: "application/json"
+                }).done(function () {
+                    var span = $('<span />').attr('class', 'greencheck').html("&#10003; Saved");
+                    var td = $('<td />').append(span);
+                    $("#eventtable tr").eq(info.length).append(td);
+                    var row = getRow();
+                    $("#eventtable tbody").append(row);
+                }).fail(function () {
+                    alert("server error, please check your input");
+                });
+            } else {
+                alert("Geocode was not successful for the following reason: " + status);
+            }
+        });
+
+    }
+
     $("#submitpatient").click(function () {
+        var existFunction = false;
         var info = $("#eventtable tr").get().map(function (tr) {
             return $(tr).find("input").get().map(function (input) {
                 return input.value;
@@ -75,28 +97,24 @@ $(document).ready(function () {
             var event = new Object();
             var place = new Object();
             $.each(info[info.length-1], function (index, value) {
-                if (index%5 == 0){ //Event name
-                    event.name = value;
-                } else if (index%5 == 1){//Event date
+                if (value == "" || value == 'undefined') {
+                    alert("Please complete patient information.");
+                    existFunction = true;
+                    return false;
+                }
+                if (index%3 == 0){ //Event name
+                    event.name = value.trim();
+                } else if (index%3 == 1){//Event date
                     event.date = value;
-                } else if (index%5 == 2){//Event Address
+                } else if (index%3 == 2){//Event Address
                     place.address = value;
-                }else if (index%5 == 3){//longitude
-                    place.longitude = value;
-                } else if (index%5 == 4){//latitude
-                    place.latitude = value;
                     event.place = place;
+                    getLngLat(event, info);
                 }
             });
-            $.ajax({
-                url: "/eventinfo",
-                method: "POST",
-                data: JSON.stringify(event),
-                contentType: "application/json"
-            }).fail(function () {
-                alert ("server error, please check your input");
+            if (existFunction == true){
                 return;
-            });
+            }
             $.ajax({
                 url: "/submitpatient" ,
                 method: "PUT"
@@ -105,7 +123,7 @@ $(document).ready(function () {
                 $("#exit").hide();
                 $("#welcomesection").show();
                 $("#patientinfo").hide();
-                $("#eventtable tbody").empty();
+                $("#eventtable > tbody").html("");
             }).fail(function () {
                 alert("Server error.");
             });
@@ -115,7 +133,8 @@ $(document).ready(function () {
     });
 
     function showEvents(currentPageNum){
-        $("#eventlist tbody").empty();
+        let eventset = new Set();
+        $("#eventlist > tbody").html("");
         var heatmapData = [];
         var requestUrl = "";
         var eventsize;
@@ -160,16 +179,29 @@ $(document).ready(function () {
                             type: "GET"
                         }).done(function (data) {
                             var num = data._embedded.patientEventAssociations.length;
-                            var row = "<tr style=\"txt-align:center\">" +
-                                "<td>"+ eventname +"</td>" +
-                                "<td>"+ eventdate +"</td>" +
-                                "<td>"+ address +"</td>" +
-                                "<td>"+ longitude +"</td>" +
-                                "<td>"+ latitude +"</td>" +
-                                "<td>"+ num +"</td>" +
-                                "</tr>";
-                            $("#eventlist tbody").append(row);
-                            });
+                            var eventEntity = new Object();
+                            var place = new Object();
+                            eventEntity.eventname = eventname;
+                            eventEntity.eventdate = eventdate;
+                            eventEntity.address = address;
+                            place.longitude = longitude;
+                            place.latitude = latitude;
+                            place.address = address;
+                            eventEntity.place = place;
+                            var eventstring = JSON.stringify(eventEntity);
+                            if (!eventset.has(eventstring)){
+                                eventset.add(eventstring);
+                                var row = "<tr style=\"txt-align:center\">" +
+                                    "<td>"+ eventname +"</td>" +
+                                    "<td>"+ eventdate +"</td>" +
+                                    "<td>"+ address +"</td>" +
+                                    "<td>"+ longitude +"</td>" +
+                                    "<td>"+ latitude +"</td>" +
+                                    "<td>"+ num +"</td>" +
+                                    "</tr>";
+                                $("#eventlist tbody").append(row);
+                            }
+                        });
                     });
                 });
             });
@@ -280,25 +312,23 @@ $(document).ready(function () {
         geolocate(this);
     });
 
-    $("#eventtable tbody").on("keypress", 'input.address', function (e) {
-        if (e.keyCode == 13){
-            fillInAddress(this);
-        }
-    });
+
 
     $("#eventtable tbody").on("input click", 'input.eventname', function () {
         var inputElement = this;
         var eventinput = this.value;
         var recommendlist = [];
+        let eventSet = new Set();
         $.ajax({
             type: "GET",
             url: "/events/search/findAllByNameContainingIgnoreCase?name="+eventinput
         }).done(function (result) {
             $.each(result._embedded.events, function (index, value) {
-                recommendlist.push(value.name);
+                eventSet.add(value.name);
             });
+            recommendlist = Array.from(eventSet);
             $(inputElement).autocomplete({
-                //appendTo: $(inputElement),
+                name: "eventrecommend",
                 source: recommendlist,
                 open: function() {
                     var position = $(inputElement).position(),
@@ -318,11 +348,11 @@ $(document).ready(function () {
 
     function initAutocomplete(element) {
 
-        autocomplete = new google.maps.places.Autocomplete(element, {types: ['geocode']});
+        autocomplete = new google.maps.places.Autocomplete(element, {types: ['geocode','establishment']});
 
         autocomplete.setFields(['address_component']);
 
-        autocomplete.addListener('place_changed', function() {fillInAddress(element)});
+        //autocomplete.addListener('place_changed', function() {fillInAddress(element)});
     }
 
     // Bias the autocomplete object to the user's geographical location,
@@ -342,42 +372,27 @@ $(document).ready(function () {
         initAutocomplete(element);
     }
 
-    function fillInAddress(element) {
-        var place = autocomplete.getPlace();
-        var address = element.value;
-        var addrcomponent = address.split(" ");
-        var addressValue="";
-        if (addrcomponent.length > 2){
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( { 'address': address}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    var lat = results[0].geometry.location.lat();
-                    var lon = results[0].geometry.location.lng();
-                    var tr = $(element).parent().parent();
-                    $(tr[0]).find('.longitude').val(lon);
-                    $(tr[0]).find('.latitude').val(lat);
-                } else {
-                    alert("Geocode was not successful for the following reason: " + status);
-                }
-            });
-        }
-    }
-
     $("#verifycheck").change(function () {
         showEvents(0);
     });
 
     function createMap(heatmapData) {
-        var center = new google.maps.LatLng(54.170193, -96.857464);
+        //var center = new google.maps.LatLng(54.170193, -96.857464);
         var map = new google.maps.Map(document.getElementById("googlemap"), {
-            center: center,
+            //center: center,
             zoom: 4,
             mapTypeId: 'roadmap'
         });
+        var bounds = new google.maps.LatLngBounds();
+        $.each(heatmapData, function (index, value) {
+            bounds.extend(value);
+        });
+        map.fitBounds(bounds);
         heatmap = new google.maps.visualization.HeatmapLayer({
             data: heatmapData,
             map: map
         });
-        heatmap.set("radius,20");
+        heatmap.set("radius,30");
     }
+
 });
