@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class AdminUser extends User {
+public class AdminUserEntity extends User_Entity {
 
-    public AdminUser (){
+    public AdminUserEntity(){
         super();
     }
 
-    public AdminUser (String emailAddress, UserPassword password){
+    public AdminUserEntity(String emailAddress, UserPassword password){
         super(emailAddress,password);
     }
 

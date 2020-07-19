@@ -1,6 +1,6 @@
 package com.Configuration;
 
-import com.Model.AdminUser;
+import com.Model.AdminUserEntity;
 import com.Model.UserPassword;
 import com.Repository.ApplicantRepository;
 import com.Repository.UserRepository;
@@ -27,7 +27,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         UserPassword userPassword = new UserPassword(this.plainPasswordString);
-        AdminUser adminUser = new AdminUser(this.adminuser, userPassword);
+        AdminUserEntity adminUser = new AdminUserEntity(this.adminuser, userPassword);
         this.userRepository.save(adminUser);
     }
 }

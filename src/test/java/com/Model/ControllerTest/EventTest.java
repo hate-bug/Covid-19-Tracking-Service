@@ -9,10 +9,12 @@ import com.Repository.UserRepository;
 import org.assertj.core.util.IterableUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import javax.transaction.Transactional;
@@ -29,6 +31,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(classes = Tracking_System_Application.class)
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 @Transactional
 public class EventTest {
 
@@ -56,7 +59,7 @@ public class EventTest {
     @Test
     @WithMockUser(username="user",roles={"USER"})
     public void verifiedUserPostEvent () throws Exception {
-        this.userRepository.save(new User("user", new UserPassword("user")));
+        this.userRepository.save(new User_Entity("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
@@ -94,7 +97,7 @@ public class EventTest {
      */
     @Test
     public void anonymousUserPostEvents () throws Exception {
-        this.userRepository.save(new User("user", new UserPassword("user")));
+        this.userRepository.save(new User_Entity("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());

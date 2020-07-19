@@ -1,9 +1,9 @@
 package com.Repository;
 
-import com.Model.User;
+import com.Model.User_Entity;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User_Entity, Long> {
 
-    User findUserByEmailAddressIgnoreCase(String emailAddress);
+    User_Entity findUserByEmailAddressIgnoreCase(String emailAddress);
 }
