@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class AdminUserEntity extends User_Entity {
+public class AdminUserEntity extends UserEntity {
 
     public AdminUserEntity(){
         super();

@@ -1,7 +1,7 @@
 package com.Service;
 
 import com.Model.Applicant;
-import com.Model.User_Entity;
+import com.Model.UserEntity;
 import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,14 @@ public class MessageSender {
     @Autowired
     private UserRepository userRepository;
 
-    public User_Entity sendRegisterEmail(Applicant applicant){
+    public UserEntity sendRegisterEmail(Applicant applicant){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(applicant.getApplicantEmail());
         message.setSubject("COVID-19 tracking system account.");
         message.setFrom(this.senderEmailAddress);
         String password = UUID.randomUUID().toString();
         UserPassword userPassword = new UserPassword(password);
-        User_Entity userEntity = new User_Entity(applicant.getApplicantEmail(), userPassword);
+        UserEntity userEntity = new UserEntity(applicant.getApplicantEmail(), userPassword);
         this.userRepository.save(userEntity);
         message.setText("Your account password is:"
                 + password + "\n You can change your password after logging in.");

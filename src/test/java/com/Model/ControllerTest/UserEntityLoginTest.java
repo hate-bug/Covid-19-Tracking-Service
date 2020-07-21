@@ -1,7 +1,7 @@
 package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
-import com.Model.User_Entity;
+import com.Model.UserEntity;
 import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class UserEntityLoginTest {
      */
     @Test
     public void testLoginWithCorrectCredentials () throws Exception{
-        this.userRepository.save(new User_Entity(this.userName, new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity(this.userName, new UserPassword("testpassword")));
         RequestBuilder requestBody = formLogin().user ("emailaddress",this.userName).password("password","testpassword").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(status().isFound())
@@ -54,7 +54,7 @@ public class UserEntityLoginTest {
      */
     @Test
     public void testLoginWithWrongCredentials () throws Exception{
-        this.userRepository.save(new User_Entity(this.userName, new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity(this.userName, new UserPassword("testpassword")));
         RequestBuilder requestBody = formLogin().user ("emailaddress",this.userName).password("password","testpasswordeee").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(unauthenticated());
@@ -71,11 +71,11 @@ public class UserEntityLoginTest {
     @Test
     @WithMockUser(username="test@test.com",roles={"USER"})
     public void testChangingPasswordAndLogInWithChangedPassword() throws Exception {
-        this.userRepository.save(new User_Entity("test@test.com", new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity("test@test.com", new UserPassword("testpassword")));
         String jsonString = "{\"oldPassword\":\"testpassword\",\"newPassword\":\"newpassword\",\"confirmnewPassword\":\"newpassword\"}";
         mockMvc.perform(post("/changepassword").content(jsonString).contentType("application/json"))
                 .andExpect(status().isOk());
-        User_Entity userEntity = this.userRepository.findUserByEmailAddressIgnoreCase("test@test.com");
+        UserEntity userEntity = this.userRepository.findUserByEmailAddressIgnoreCase("test@test.com");
         RequestBuilder requestBody = formLogin().user ("emailaddress","test@test.com").password("password","newpassword").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(authenticated().withUsername("test@test.com"));

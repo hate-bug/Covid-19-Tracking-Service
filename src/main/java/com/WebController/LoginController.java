@@ -1,6 +1,6 @@
 package com.WebController;
 
-import com.Model.User_Entity;
+import com.Model.UserEntity;
 import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import com.Payload.ConfirmPasswordPayload;
@@ -29,7 +29,7 @@ public class LoginController {
 
     @PostMapping (value = "/changepassword")
     public boolean changePassword (@RequestBody ConfirmPasswordPayload confirmPasswordPayload, Principal principal){
-        User_Entity userEntity = this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName());
+        UserEntity userEntity = this.userRepository.findUserByEmailAddressIgnoreCase(principal.getName());
         if (!confirmPasswordPayload.getConfirmnewPassword().equals(confirmPasswordPayload.getNewPassword())){
             return false;
         }

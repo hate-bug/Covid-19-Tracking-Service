@@ -58,7 +58,7 @@ public class EventTest {
     @Test
     @WithMockUser(username="user",roles={"USER"})
     public void verifiedUserPostEvent () throws Exception {
-        this.userRepository.save(new User_Entity("user", new UserPassword("user")));
+        this.userRepository.save(new UserEntity("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
@@ -96,7 +96,7 @@ public class EventTest {
      */
     @Test
     public void anonymousUserPostEvents () throws Exception {
-        this.userRepository.save(new User_Entity("user", new UserPassword("user")));
+        this.userRepository.save(new UserEntity("user", new UserPassword("user")));
         ArrayList<Event> list = new ArrayList<>();
         this.eventRepository.findAll().forEach(list::add);
         assertEquals(0, list.size());
