@@ -18,6 +18,6 @@ public class ViewController {
 
     @GetMapping (value = "/admin")
     public String adminPage (){
-        return "/admin";
+        return "admin";
     }
 }

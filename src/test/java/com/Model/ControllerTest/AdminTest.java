@@ -2,7 +2,7 @@ package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
 import com.Configuration.ApplicationConfigurationBeans;
-import com.Model.AdminUser;
+import com.Model.AdminUserEntity;
 import com.Model.Applicant;
 import com.Model.UserPassword;
 import com.Repository.ApplicantRepository;
@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Tracking_System_Application.class)
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 @Transactional
 public class AdminTest {
 
@@ -65,7 +67,7 @@ public class AdminTest {
      */
     @Test
     public void AdminLoginTest () throws Exception {
-        AdminUser adminUser = new AdminUser("test@test.test", new UserPassword("testpassword"));
+        AdminUserEntity adminUser = new AdminUserEntity("test@test.test", new UserPassword("testpassword"));
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)
@@ -79,7 +81,7 @@ public class AdminTest {
      */
     @Test
     public void AdminLoginTestWithWrongCredentials () throws Exception {
-        AdminUser adminUser = new AdminUser("test@test.test", new UserPassword("testpassword"));
+        AdminUserEntity adminUser = new AdminUserEntity("test@test.test", new UserPassword("testpassword"));
         this.userRepository.save(adminUser);
         RequestBuilder requestBuilder = formLogin().user("emailaddress","test@test.test").password("password","testpassword222").loginProcessingUrl("/userlogin");
         this.mockMvc.perform(requestBuilder)

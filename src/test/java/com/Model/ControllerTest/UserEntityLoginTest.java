@@ -1,12 +1,13 @@
 package com.Model.ControllerTest;
 
 import com.Application.Tracking_System_Application;
-import com.Model.User;
+import com.Model.UserEntity;
 import com.Model.UserPassword;
 import com.Repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,8 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = Tracking_System_Application.class)
 @AutoConfigureMockMvc
+@AutoConfigureTestDatabase
 @Transactional
-public class UserLoginTest {
+public class UserEntityLoginTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -39,7 +41,7 @@ public class UserLoginTest {
      */
     @Test
     public void testLoginWithCorrectCredentials () throws Exception{
-        this.userRepository.save(new User(this.userName, new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity(this.userName, new UserPassword("testpassword")));
         RequestBuilder requestBody = formLogin().user ("emailaddress",this.userName).password("password","testpassword").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(status().isFound())
@@ -52,7 +54,7 @@ public class UserLoginTest {
      */
     @Test
     public void testLoginWithWrongCredentials () throws Exception{
-        this.userRepository.save(new User(this.userName, new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity(this.userName, new UserPassword("testpassword")));
         RequestBuilder requestBody = formLogin().user ("emailaddress",this.userName).password("password","testpasswordeee").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(unauthenticated());
@@ -69,11 +71,11 @@ public class UserLoginTest {
     @Test
     @WithMockUser(username="test@test.com",roles={"USER"})
     public void testChangingPasswordAndLogInWithChangedPassword() throws Exception {
-        this.userRepository.save(new User("test@test.com", new UserPassword("testpassword")));
+        this.userRepository.save(new UserEntity("test@test.com", new UserPassword("testpassword")));
         String jsonString = "{\"oldPassword\":\"testpassword\",\"newPassword\":\"newpassword\",\"confirmnewPassword\":\"newpassword\"}";
         mockMvc.perform(post("/changepassword").content(jsonString).contentType("application/json"))
                 .andExpect(status().isOk());
-        User user = this.userRepository.findUserByEmailAddressIgnoreCase("test@test.com");
+        UserEntity userEntity = this.userRepository.findUserByEmailAddressIgnoreCase("test@test.com");
         RequestBuilder requestBody = formLogin().user ("emailaddress","test@test.com").password("password","newpassword").loginProcessingUrl("/userlogin");
         mockMvc.perform(requestBody)
                 .andExpect(authenticated().withUsername("test@test.com"));

@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,11 +22,11 @@ public class User implements UserDetails {
     })
     private UserPassword userPassword;
 
-    public User(){
+    public UserEntity(){
         this("unknown", new UserPassword());
     }
 
-    public User (String emailAddress, UserPassword userPassword){
+    public UserEntity(String emailAddress, UserPassword userPassword){
         this.emailAddress = emailAddress;
         this.userPassword = userPassword;
     }
