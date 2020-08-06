@@ -178,7 +178,17 @@ $(document).ready(function () {
                             url: associationurl,
                             type: "GET"
                         }).done(function (data) {
-                            var num = data._embedded.patientEventAssociations.length;
+                            var num = 0;
+                            if ($("#verifycheck").is(":checked")){
+                                $.each (data._embedded.patientEventAssociations, function (index, value) {
+                                    if (value.verified == true){
+                                        num++;
+                                    }
+                                });
+                            } else {
+                                num = data._embedded.patientEventAssociations.length;
+                            }
+
                             var eventEntity = new Object();
                             var place = new Object();
                             eventEntity.eventname = eventname;
