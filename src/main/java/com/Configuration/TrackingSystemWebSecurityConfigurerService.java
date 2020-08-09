@@ -27,13 +27,13 @@ public class TrackingSystemWebSecurityConfigurerService extends WebSecurityConfi
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                    .antMatchers("/admin.html", "/admin/**").access("hasRole('ADMIN')")
+                    .antMatchers("/admin", "/admin/**").access("hasRole('ADMIN')")
                     .and()
-                    .formLogin().loginPage("/login.html")
+                    .formLogin().loginPage("/login")
                     .loginProcessingUrl("/userlogin")
                     .usernameParameter("emailaddress").passwordParameter("password")
                     .defaultSuccessUrl("/", true)
-                    .failureForwardUrl("/login.html")
+                    .failureForwardUrl("/login")
                 .and()
                     .logout().permitAll()
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())

@@ -286,7 +286,10 @@ $(document).ready(function () {
     });
 
     $("#showform").click(function () {
+        //hide all section when register
         $("#welcomesection").hide();
+        $("#eventsection").hide();
+        $("#patientinfo").hide();
         $("#formsection").show();
         $("#exit").show();
     });
